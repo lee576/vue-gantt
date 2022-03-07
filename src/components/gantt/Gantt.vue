@@ -34,7 +34,7 @@
           <task-table :headersHeight='headersHeight' :rowHeight='rowHeight'></task-table>      
         </template>
         <template v-slot:two>
-          <gantt-table :headersHeight='headersHeight' :rowHeight='rowHeight'></gantt-table>
+          <gantt-table ref='barContent' :headersHeight='headersHeight' :rowHeight='rowHeight'></gantt-table>
         </template>
       </SplitPane>
     </div>
@@ -204,6 +204,7 @@ export default {
     setMode: mutations.setMode,
     // 修改按钮样式
     timeMode (mode) {
+      this.$refs.barContent.scrollLeft = 0
       for(let button of this.buttonClass){
         Vue.set(this.buttonClass,this.buttonClass.indexOf(button),'button')
       }

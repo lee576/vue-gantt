@@ -116,7 +116,11 @@ export default {
       // 滚动条定位到 Bar 的开始位置
       EventBus.$on('moveToBar',(rowId) => {
         if(this.row.id === rowId) {
-          this.$parent.$parent.$refs.tableBar.scrollLeft = this.$refs.bar.getAttribute('data-x')
+          this.$nextTick(() => {
+            if(this.$refs.bar) {
+              this.$parent.$parent.$refs.tableBar.scrollLeft = this.$refs.bar.getAttribute('data-x')
+            }
+          })
         }
       })
       
