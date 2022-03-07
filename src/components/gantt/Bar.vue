@@ -1,5 +1,5 @@
 <template>
-  <svg @mouseenter.self="mouseenter" ref='bar' class="bar" :width="barWidth + 'px'" :height="barHeight + 'px'"></svg>
+  <svg ref='bar' class="bar" :height="barHeight + 'px'"></svg>
 </template>
 <script>
 import Snap from 'snapsvg-cjs'
@@ -27,10 +27,10 @@ export default {
 		return {
       // Bar的高度占容器Row行高的70%, 高度随容器行高变化而变化
       barHeight: this.rowHeight * 0.7,
-      barWidth: 0,
       // resize 的拖动方向
       direction: null,
-      oldBarDataX: 0
+      oldBarDataX: 0,
+      oldBarWidth: 0
     };
 	},
 	computed: {
@@ -47,16 +47,39 @@ export default {
 	created() {},
 	mounted() {
     this.$nextTick(() => {
-      this.barWidth = this.scale
-      // console.log(this.startGanttDate)
-      // console.log(this.endGanttDate)
-
-      console.log(this.mode)
-
       let that = this
+      let dataX = 0
+      switch (this.mode) {
+        case '月':
+        case '日': {
+          let fromPlanStartDays = this.$moment(this.row.start_date).diff(this.$moment(this.startGanttDate), 'days') 
+          //计算Bar起始x轴坐标
+          dataX = this.scale * fromPlanStartDays
+          //计算Bar的长度
+          let spendDays = this.$moment(this.row.end_date).diff(this.$moment(this.row.start_date), 'days') + 1
+          this.oldBarWidth = spendDays * this.scale
+          this.row.spend_time = spendDays + '天'
+          break
+        }
+        case '时': {
+          let fromPlanStartHours = this.$moment(this.row.start_date).diff(this.$moment(this.startGanttDate), 'hours') 
+          //计算Bar起始x轴坐标
+          dataX = this.scale * fromPlanStartHours
+          //计算Bar的长度
+          let spendHours = this.$moment(this.row.end_date).diff(this.$moment(this.row.start_date), 'hours') + 1
+          this.oldBarWidth = spendHours * this.scale
+          this.row.spend_time = spendHours + '小时'
+          break
+        }
+      }
       const bar = this.$refs.bar;
       let svg = Snap(bar);
-      
+      //设置Bar起始x轴坐标
+      bar.setAttribute('data-x', dataX)
+      bar.setAttribute('width', this.oldBarWidth)
+      bar.style.webkitTransform =
+                    bar.style.transform =
+                    'translate(' + dataX + 'px, 0px)'
       // 定义一个斜条纹的画笔
       let p = svg.path("M10-5-10,15M15,0,0,15M0-5-20,15").attr({
           fill: "none",
@@ -64,12 +87,12 @@ export default {
           stroke: "gray",
           strokeWidth: 5
       }).pattern(0, 0, 10, 10)
-      svg.rect(0, 0, this.scale, this.barHeight, 10).attr({fill: p})
+      svg.rect(0, 0, this.oldBarWidth, this.barHeight, 10).attr({fill: p})
       let g = svg.g();
-      let innerRect = svg.rect(0, 0, this.scale / 2, this.barHeight, 10)
+      let innerRect = svg.rect(0, 0, this.oldBarWidth / 2, this.barHeight, 10)
       // 半透明
       innerRect.attr({fill: 'red',fillOpacity: '.4'})
-      innerRect.attr({width: this.scale / 2})
+      innerRect.attr({width: this.oldBarWidth / 2})
       // 居中显示文字
       let text = svg.text(innerRect.node.width.baseVal.value / 2, '50%', "50%").attr({
           stroke: "white",
@@ -87,22 +110,23 @@ export default {
       g.add(text)
       
       interact(bar).draggable({
-          // enable inertial throwing
           inertia: false,
-          // keep the element within the area of #app
           modifiers: [
               interact.modifiers.restrictRect({
-                  restriction: 'parent', // restriction: 'parent',
+                  restriction: 'parent', // 只能在父元素内拖动
                   endOnly: true
               })
           ],
-          // enable autoScroll
           autoScroll: true,
           listeners: {
-              // call this function on every dragmove event
+              start:(event) => {
+                // 记录拖动前的x轴坐标
+                this.oldBarDataX = event.target.getAttribute('data-x')
+                // 记录拖动前Bar的宽度
+                this.oldBarWidth = event.target.width.baseVal.value
+              },
               move: dragMoveListener,
-              // call this function on every dragend event
-              end(event) {
+              end:(event) => {
                 let target = event.target
                 let x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
                 // 确保 bar 首尾永远落在单元格的边框上
@@ -111,68 +135,63 @@ export default {
                 if(x > that.timelineCellCount * that.scale) {
                   x = that.timelineCellCount * that.scale
                 }
-                // translate the element
-                target.style.webkitTransform =
-                    target.style.transform =
-                    'translate(' + x + 'px, 0px)'
+                target.style.webkitTransform = target.style.transform = 'translate(' + x + 'px, 0px)'
                 target.setAttribute('data-x', x)
+                
+                // 计算x轴拖动的偏移量
+                let offsetX = Number(x) - Number(this.oldBarDataX)
+                switch (this.mode) {
+                  case '月':
+                  case '日': {
+                    let offsetStartHours = (offsetX / this.scale) * 24  
+                    this.row.start_date = this.$moment(this.row.start_date).locale('zh-cn').add(offsetStartHours, 'hours').format('YYYY-MM-DD HH:mm:ss')
+                    this.row.end_date = this.$moment(this.row.end_date).locale('zh-cn').add(offsetStartHours, 'hours').format('YYYY-MM-DD HH:mm:ss')      
+                    break
+                  }
+                  case '时': {
+                    let offsetStartHours = (offsetX / this.scale)
+                    this.row.start_date = this.$moment(this.row.start_date).locale('zh-cn').add(offsetStartHours, 'hours').format('YYYY-MM-DD HH:mm:ss')
+                    this.row.end_date = this.$moment(this.row.end_date).locale('zh-cn').add(offsetStartHours, 'hours').format('YYYY-MM-DD HH:mm:ss')    
+                    break
+                  }
+                }
               }
           },
       })
       
       interact(bar).resizable({
-        // resize from all edges and corners
+        // 调整大小的时候确定哪些边可以拖动
         edges: { left: true, right: true, bottom: false, top: false },
         listeners: {
+          start:(event) => {
+            // 记录调整大小前的x轴坐标
+            this.oldBarDataX = event.target.getAttribute('data-x')
+            // 记录调整大小前Bar的宽度
+            this.oldBarWidth = event.target.getAttribute('width')
+          },
           end: (event) => {
-            // 记住最初 Bar 的宽度
-            const _barWidth =  this.barWidth
-
-            // that.row.start_date = '0001-01-01 00:00:00'
-            // that.row.end_date = '0001-01-01 23:59:59'
             let target = event.target
-            //let x = (parseFloat(target.getAttribute('data-x')) || 0)
-            let x = 0
-            // 拖动的是 Bar 的右边边缘
-            if(event.edges.right) { 
-              let remainWidth = event.rect.width % this.scale
-              if(remainWidth !== 0) {
-                let multiple = Math.floor(event.rect.width / this.scale)
-                // 拖到超过比例尺最小单位一半宽度
-                if(remainWidth < (this.scale / 2)) {
-                  event.rect.width = multiple * this.scale
-                } else {
-                  // 拖到不足比例尺最小单位一半宽度
-                  event.rect.width = (multiple + 1) * this.scale
-                }
+            let x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
+           
+            let remainWidth = event.rect.width % this.scale
+            if(remainWidth !== 0) {
+              let multiple = Math.floor(event.rect.width / this.scale)
+              // 拖到超过比例尺最小单位一半宽度
+              if(remainWidth < (this.scale / 2)) {
+                event.rect.width = multiple * this.scale
+              } else {
+                // 拖到不足比例尺最小单位一半宽度
+                event.rect.width = (multiple + 1) * this.scale
               }
             }
             
+            let offsetWidth = this.oldBarWidth - event.rect.width
             // 拖动的是 Bar 的左边边缘
             if(event.edges.left) {  
-              let offset = (Math.floor(Math.abs(event.rect.width - _barWidth) / this.scale) + 1)* this.scale
-              if(offset < this.scale) {
-                offset = this.scale
-              }
-              if (event.deltaRect.left < 0) {
-                event.rect.width = _barWidth + offset
-              }
-              else {
-                event.rect.width = _barWidth - offset
-              }
-              if (event.rect.width < this.scale)
-                event.rect.width = this.scale
-              if (event.rect.width > this.timelineCellCount * this.scale)
-                event.rect.width = this.timelineCellCount * this.scale
+              x += offsetWidth
+            }
 
-              x = Number(this.oldBarDataX) - Number(event.rect.width - _barWidth)
-              if(x < 0)
-                x = 0
-            }
-            else {
-              x = (parseFloat(target.getAttribute('data-x')) || 0)
-            }
-            // update the element's style
+            target.setAttribute('width', event.rect.width)
             target.style.width = event.rect.width + 'px'
             target.style.webkitTransform = target.style.transform = 'translate(' + x + 'px, 0px)'
             target.setAttribute('data-x', x)
@@ -186,12 +205,10 @@ export default {
                 stroke: "gray",
                 strokeWidth: 5
             }).pattern(0, 0, 10, 10)
-
             svg.rect(0, 0,event.rect.width, event.rect.height, 10).attr({fill: p})
             let g = svg.g();
             let innerRect = svg.rect(0, 0, event.rect.width / 2, event.rect.height, 10)
-
-            // 半透明
+            // 半透明的矩形
             innerRect.attr({fill: 'red',fillOpacity: '.4'})
             let text = svg.text(innerRect.node.width.baseVal.value / 2, '50%', "50%").attr({
                 stroke: "white",	// 蓝色
@@ -206,18 +223,50 @@ export default {
             } else {
               text.attr('x', xPosition)
             }
-            this.barWidth = event.rect.width
             g.add(innerRect)
             g.add(text)
+
+            //设置拖动后的日期
+            switch (this.mode) {
+              case '月':
+              case '日': { 
+                // 拖动的是 Bar 的左边边缘            
+                if(event.edges.left) {  
+                  let offsetStart = ((this.oldBarDataX - x) / this.scale) * 24 
+                  this.row.start_date = this.$moment(this.row.start_date).locale('zh-cn').add(-offsetStart, 'hours').format('YYYY-MM-DD HH:mm:ss')
+                }
+                // 拖动的是 Bar 的右边边缘   
+                else {
+                  let offsetEnd = (offsetWidth / this.scale) * 24 
+                  this.row.end_date = this.$moment(this.row.end_date).locale('zh-cn').add(-offsetEnd, 'hours').format('YYYY-MM-DD HH:mm:ss')
+                }
+                this.row.spend_time = this.$moment(this.row.end_date).diff(this.$moment(this.row.start_date), 'days') + 1 + '天'
+                break
+              }
+              case '时': {
+                // 拖动的是 Bar 的左边边缘   
+                if(event.edges.left) {  
+                  let offsetStart = (this.oldBarDataX - x) / this.scale 
+                  this.row.start_date = this.$moment(this.row.start_date).locale('zh-cn').add(-offsetStart, 'hours').format('YYYY-MM-DD HH:mm:ss')
+                }
+                // 拖动的是 Bar 的右边边缘 
+                else {
+                  let offsetEnd = offsetWidth / this.scale
+                  this.row.end_date = this.$moment(this.row.end_date).locale('zh-cn').add(-offsetEnd, 'hours').format('YYYY-MM-DD HH:mm:ss')
+                }
+                this.row.spend_time = this.$moment(this.row.end_date).diff(this.$moment(this.row.start_date), 'hours')+ 1  + '小时'
+                break
+              }
+            }
           }
         },
         modifiers: [
-          // keep the edges inside the parent
+          // 拖拽时边缘只能在父容器里面
           interact.modifiers.restrictEdges({
             outer: 'parent'
           }),
 
-          // minimum size
+          // 最小宽高和最大宽高
           interact.modifiers.restrictSize({
             min: { width: this.scale, height: this.barHeight },
             max: { width: this.scale * this.timelineCellCount, height: this.barHeight }
@@ -235,7 +284,6 @@ export default {
           height: `${event.rect.height}px`,
           transform: `translate(${x}px, 0px)`
         })
-
         event.target.setAttribute('data-x', x)
         event.target.setAttribute('data-y', 0)
       }
@@ -253,11 +301,6 @@ export default {
           }
       }
       return false;
-    },
-    mouseenter(event) {
-      // 记录最初的 x轴值
-      this.oldBarDataX = event.srcElement.getAttribute('data-x')
-      event.stopPropagation()
     }
   }
 }
@@ -266,6 +309,9 @@ export default {
 .bar {
   position: absolute;
   z-index: 100;
+  /* 给Bar设置一个背景色 */
+  background-color: #faf7ec;
+  border-radius: 5px;  
 }
 </style>
 
