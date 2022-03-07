@@ -4,6 +4,7 @@
 <script>
 import Snap from 'snapsvg-cjs'
 import interact from 'interactjs'
+import { EventBus }  from './EventBus.js'
 import { store } from '@/components/gantt/store.js'
 export default {
   name: 'Bar',
@@ -49,6 +50,7 @@ export default {
     this.$nextTick(() => {
       let that = this
       let dataX = 0
+
       switch (this.mode) {
         case '月':
         case '日': {
@@ -72,6 +74,8 @@ export default {
           break
         }
       }
+      this.oldBarDataX = dataX
+
       const bar = this.$refs.bar;
       let svg = Snap(bar);
       //设置Bar起始x轴坐标
@@ -95,7 +99,7 @@ export default {
       innerRect.attr({width: this.oldBarWidth / 2})
       // 居中显示文字
       let text = svg.text(innerRect.node.width.baseVal.value / 2, '50%', "50%").attr({
-          stroke: "white",
+          stroke: "#faf7ec",
           dominantBaseline: 'middle',
           fontSize: '15px'
       });
@@ -108,6 +112,13 @@ export default {
       }
       g.add(innerRect)
       g.add(text)
+
+      // 滚动条定位到 Bar 的开始位置
+      EventBus.$on('moveToBar',(rowId) => {
+        if(this.row.id === rowId) {
+          this.$parent.$parent.$refs.tableBar.scrollLeft = this.$refs.bar.getAttribute('data-x')
+        }
+      })
       
       interact(bar).draggable({
           inertia: false,
@@ -311,7 +322,7 @@ export default {
   z-index: 100;
   /* 给Bar设置一个背景色 */
   background-color: #faf7ec;
-  border-radius: 5px;  
+  border-radius: 5px;
 }
 </style>
 

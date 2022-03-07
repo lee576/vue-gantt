@@ -11,6 +11,7 @@ export default {
 	data() {
 		return {
       mapFields: {
+        id: 'id',
         task: 'taskNo',
         priority: 'level',
         startdate: 'start_date',
@@ -18,6 +19,7 @@ export default {
         takestime: 'spend_time'
       },
       tasks: [{
+        id: '1',
         taskNo: '12345',
         level: '重要',
         start_date: '2022-03-04 00:00:00',
@@ -25,6 +27,7 @@ export default {
         spend_time: '2'
       },
       {
+        id: '2',
         taskNo: '54321',
         level: '一般',
         start_date: '2022-03-04 00:00:00',

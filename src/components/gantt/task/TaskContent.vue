@@ -2,7 +2,7 @@
   <div ref='taskContent' class="content" @scroll="scroll()" @mouseover="mouseover()">
     <template  v-for='(item, index) in tasks'>
       <div v-if='headers' :key="index + '_task'" style="width: 100%;border-top: 1px solid #cecece;margin:0px 0px -1px -1px;"></div>
-        <div class="row" v-bind:style="{ height: rowHeight + 'px' }" :key="index + '_row'">
+        <div @click="rowClick(item)" class="row" v-bind:style="{ height: rowHeight + 'px' }" :key="index + '_row'">
           <template v-for='(header,headerIndex) in headers'>
             <div v-show="header.show" class="cell" :key= headerIndex v-bind:style="{ minWidth: header.width + 'px', maxWidth: header.width + 'px',height: rowHeight + 'px' }">{{ item[mapFields[header.property]]  }}</div>
           </template>
@@ -62,6 +62,11 @@ export default {
     },
     mouseover() {
       this.scrollFlag = false
+    },
+    rowClick(row) {
+      if(row && row.id) {
+        EventBus.$emit('moveToBar',row.id)
+      }
     }
   }
 }
