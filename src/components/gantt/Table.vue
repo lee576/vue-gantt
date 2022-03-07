@@ -1,5 +1,5 @@
 <template>
-  <div class="table">
+  <div ref='tableBar' class="table">
     <div class="header" v-bind:style="{ height: headersHeight + 'px' }">
       <div style="width: 100%;border-top: 1px solid #cecece;margin:0px 0px -1px -1px;"></div>
       <timeline-header :hourHeaders='hourHeaders' :dayHeaders='dayHeaders' :monthHeaders='monthHeaders'></timeline-header>
