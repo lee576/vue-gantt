@@ -11,7 +11,7 @@ export let store = Vue.observable({
   startGanttDate: null,
   endGanttDate: null,
   scrollFlag: true,
-  mode: null,
+  mode: null
 })
 export let mutations = {
     //月度表头

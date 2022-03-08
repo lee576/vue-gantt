@@ -31,7 +31,7 @@
     <div class="gantt">
       <SplitPane direction="row" :min="10" :max="80" :triggerLength="10" :paneLengthPercent.sync="paneLengthPercent">
         <template v-slot:one>
-          <task-table :headersHeight='headersHeight' :rowHeight='rowHeight'></task-table>      
+          <task-table :headersHeight='headersHeight' :rowHeight='rowHeight'></task-table>     
         </template>
         <template v-slot:two>
           <gantt-table ref='barContent' :headersHeight='headersHeight' :rowHeight='rowHeight'></gantt-table>
@@ -71,6 +71,7 @@ export default {
       // 任务表头
       taskHeaders : [      
         {title: 'ID', width: 20, property:'id',show: false},
+        {title: 'PID', width: 20, property:'parentId',show: false},
         {title: '任务名称', width: 190, property:'task',show: true},
         {title: '优先级', width: 90, property: 'priority',show: true},
         {title: '开始时间', width: 150, property: 'startdate',show: true},

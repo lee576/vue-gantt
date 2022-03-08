@@ -13,6 +13,7 @@
 <script>
 import TableContent from './TableContent.vue'
 import TimelineHeader from './TimelineHeader.vue'
+import { EventBus }  from './EventBus.js'
 import { store } from '@/components/gantt/store.js'
 export default {
   props : {
@@ -27,7 +28,8 @@ export default {
   },
 	components: { TableContent, TimelineHeader },
 	data() {
-		return {};
+		return {
+    };
 	},
 	computed: {
     dayHeaders (){
@@ -40,11 +42,21 @@ export default {
       return store.hourHeaders
     }
   },
-	watch: {},
+	watch: {
+
+  },
 	created() {},
 	mounted() {
+    this.$nextTick(() => {
+       EventBus.$on('scrollToBar',(left) => {
+          if(this.$refs.tableBar) {
+            this.$refs.tableBar.scrollLeft = left
+          }      
+       })
+    })
 	},
 	methods: {
+
   }
 }
 </script>

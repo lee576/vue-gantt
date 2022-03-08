@@ -12,6 +12,7 @@ export default {
 		return {
       mapFields: {
         id: 'id',
+        parentId: 'pid',
         task: 'taskNo',
         priority: 'level',
         startdate: 'start_date',
@@ -20,19 +21,39 @@ export default {
       },
       tasks: [{
         id: '1',
-        taskNo: '12345',
+        pid: '0',
+        taskNo: '1',
         level: '重要',
-        start_date: '2022-03-04 00:00:00',
-        end_date: '2022-03-04 23:00:00',
-        spend_time: '2'
+        start_date: '2022-03-04 05:00:00',
+        end_date: '2022-03-05 00:00:00',
+        spend_time: null
+      },
+      {
+        id: '3',
+        pid: '0',
+        taskNo: '2',
+        level: '紧急',
+        start_date: '2022-03-05 05:00:00',
+        end_date: '2022-03-09 00:00:00',
+        spend_time: null
       },
       {
         id: '2',
-        taskNo: '54321',
+        pid: '1',
+        taskNo: '1_1',
         level: '一般',
-        start_date: '2022-03-04 00:00:00',
-        end_date: '2022-03-08 23:00:00',
-        spend_time: '2'
+        start_date: '2022-03-07 00:00:00',
+        end_date: '2022-03-11 22:00:00',
+        spend_time: null
+      },
+      {
+        id: '4',
+        pid: '3',
+        taskNo: '2_1',
+        level: '不重要',
+        start_date: '2022-03-08 00:00:00',
+        end_date: '2022-03-14 22:00:00',
+        spend_time: null
       }]
     }
 	},
