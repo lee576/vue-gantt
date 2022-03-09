@@ -1,7 +1,7 @@
 <template>
   <div ref='barContent' @scroll="scroll()" @mouseover="mouseover()"
     v-if='tasks' class="content">
-    <BarRecursionRow :rowHeight='rowHeight' :tasks='getRootNode()'></BarRecursionRow>
+    <BarRecursionRow :rowHeight='rowHeight' :tasks='tasks'></BarRecursionRow>
   </div>
 </template>
 <script>
@@ -61,7 +61,6 @@ export default {
     setScrollFlag: mutations.setScrollFlag,
     // 找出根节点
     getRootNode() {
-      console.log(this.tasks.filter(obj => obj[this.mapFields['parentId']] === '0'))
       return this.tasks.filter(obj => obj[this.mapFields['parentId']] === '0')
     },
     scroll() {

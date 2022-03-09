@@ -1,4 +1,5 @@
 import Vue from 'vue'
+export let serialNumber = 0
 export let store = Vue.observable({ 
   monthHeaders:[], 
   dayHeaders:[], 

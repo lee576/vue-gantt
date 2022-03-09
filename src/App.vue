@@ -54,6 +54,24 @@ export default {
         start_date: '2022-03-08 00:00:00',
         end_date: '2022-03-14 22:00:00',
         spend_time: null
+      },
+      {
+        id: '5',
+        pid: '2',
+        taskNo: '1_1_1',
+        level: '一般',
+        start_date: '2022-03-07 00:00:00',
+        end_date: '2022-03-11 22:00:00',
+        spend_time: null
+      },
+      {
+        id: '5',
+        pid: '1',
+        taskNo: '1_2',
+        level: '一般',
+        start_date: '2022-03-03 00:00:00',
+        end_date: '2022-03-07 22:00:00',
+        spend_time: null
       }]
     }
 	},

@@ -1,5 +1,14 @@
 <template>
-  <svg ref='bar' class="bar" :height="barHeight + 'px'"></svg>
+  <div v-show='showRow'>
+    <div style="border-top: 1px solid #cecece;margin:-2px 0px -1px -1px;"></div>
+      <div class="barRow" v-bind:style="{ height: rowHeight + 'px'}">
+        <svg :key= "timelineCellCount + '_' + '_svg'" ref='bar' class="bar" :height="barHeight + 'px'"></svg>
+        <template v-for='(count,index) in timelineCellCount'>
+          <div class="cell" :key= "count + index + timelineCellCount + showRow + '_cell'" v-bind:style="{ minWidth: scale + 'px', maxWidth: scale + 'px',height: rowHeight + 'px' }"></div>
+        </template>
+      </div>
+    <div style="border-top: 1px solid #cecece;margin:0px 0px 1px -1px;"></div>
+  </div>
 </template>
 <script>
 import Snap from 'snapsvg-cjs'
@@ -22,7 +31,7 @@ export default {
     },
     endGanttDate: {
       type: String
-    }
+    },
   },
 	data() {
 		return {
@@ -31,7 +40,8 @@ export default {
       // resize 的拖动方向
       direction: null,
       oldBarDataX: 0,
-      oldBarWidth: 0
+      oldBarWidth: 0,
+      showRow: true,
     };
 	},
 	computed: {
@@ -43,11 +53,21 @@ export default {
     },
     mode () {
       return store.mode
+    },
+    mapFields(){
+      return store.mapFields
     }
   },
 	created() {},
 	mounted() {
     this.$nextTick(() => {
+      EventBus.$on('expandTask',(rowId, expand) => {
+        if(this.row[this.mapFields['parentId']] === rowId) {
+            this.showRow = expand
+            EventBus.$emit('expandTask',this.row.id,expand)
+        }
+      })
+
       let that = this
       let dataX = 0
 
@@ -332,13 +352,35 @@ export default {
   }
 }
 </script>
-<style scoped>
-.bar {
-  position: absolute;
-  z-index: 100;
-  /* 给Bar设置一个背景色 */
-  background-color: #faf7ec;
-  border-radius: 5px;
-}
+<style lang='less' scoped>
+  .barRow {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    border-top: 1px solid #cecece;
+    border-right: 0px solid #cecece;
+    border-bottom: 1px solid #cecece;
+    margin:0px 1px -1px -1px;
+    width: fit-content;
+    position: relative;
+    .bar {
+      position: absolute;
+      z-index: 100;
+      /* 给Bar设置一个背景色 */
+      background-color: #faf7ec;
+      border-radius: 5px;
+    }
+    .cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      border-top: 1px solid #cecece;
+      border-right: 1px solid #cecece;
+      border-bottom: 1px solid #cecece;
+      margin:-1px 0px 0px 0px;
+    }
+  }
 </style>
 

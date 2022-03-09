@@ -68,10 +68,12 @@ export default {
   },
   data() {
     return {
+      initData : [],
       // 任务表头
       taskHeaders : [      
         {title: 'ID', width: 20, property:'id',show: false},
         {title: 'PID', width: 20, property:'parentId',show: false},
+        {title: '序号', width: 120, property:'no',show: true},
         {title: '任务名称', width: 190, property:'task',show: true},
         {title: '优先级', width: 90, property: 'priority',show: true},
         {title: '开始时间', width: 150, property: 'startdate',show: true},
@@ -106,7 +108,8 @@ export default {
       // 甘特图开始时间
       startGanttDate: null,
       // 甘特图结束时间
-      endGanttDate: null
+      endGanttDate: null,
+      result: ''
     }
   },
 	components: { GanttTable, TaskTable, SplitPane, DatePicker },
@@ -190,8 +193,40 @@ export default {
     this.dayHeaders = []
     this.hourHeaders = []
     this.mode = '月'
+    let level = 0;
+    this.RecursionData('0',this.tasks,level)
+    console.log(this.initData)
+    this.setTasks(this.initData)
 	},
   methods:{
+    FindAllParent(targetData,pid) {
+      let parent = targetData.filter(obj => obj[this.mapFields['id']] === pid)
+      if(parent && parent.length > 0) {
+        this.result = parent[0].index + '.' + this.result 
+        this.FindAllParent(targetData,parent[this.mapFields['parentId']])
+      }
+    },
+    RecursionData(id, tasks, level) {
+      let findResult = tasks.filter(obj => obj[this.mapFields['parentId']] === id)
+      if(findResult && findResult.length > 0) {
+         for(let i = 0;i < findResult.length; i++)
+         { 
+           findResult[i].index = i + 1
+           let parent = this.initData.filter(obj => obj[this.mapFields['id']] === findResult[i][this.mapFields['parentId']])
+           this.result = ''
+           if(parent && parent.length > 0) {
+              this.result = parent[0].index + '.' + findResult[i].index
+              this.FindAllParent(this.initData,parent[0][this.mapFields['parentId']])
+              findResult[i].no = this.result
+           }
+           else {
+             findResult[i].no = i + 1 + ''
+           }
+           this.initData.push(findResult[i])
+           this.RecursionData(findResult[i][this.mapFields['id']],tasks,level)
+         }
+      }
+    },
     setDayHeaders: mutations.setDayHeaders,
     setTaskHeaders: mutations.setTaskHeaders,
     setMonthHeaders: mutations.setMonthHeaders,
@@ -225,6 +260,7 @@ export default {
         }
       }
       this.mode = mode
+      this.$forceUpdate()
     },
     setTimeLineHeaders(newVal) {
       // 开始时间格式是否合法
