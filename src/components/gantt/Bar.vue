@@ -1,8 +1,8 @@
 <template>
-  <div v-show='showRow'>
+  <div v-if='showRow'>
     <div style="border-top: 1px solid #cecece;margin:-2px 0px -1px -1px;"></div>
       <div class="barRow" v-bind:style="{ height: rowHeight + 'px'}">
-        <svg :key= "timelineCellCount + '_' + '_svg'" ref='bar' class="bar" :height="barHeight + 'px'"></svg>
+        <svg v-if='showRow' :key= "timelineCellCount + '_' + '_svg'" ref='bar' class="bar" :height="barHeight + 'px'"></svg>
         <template v-for='(count,index) in timelineCellCount'>
           <div class="cell" :key= "count + index + timelineCellCount + showRow + '_cell'" v-bind:style="{ minWidth: scale + 'px', maxWidth: scale + 'px',height: rowHeight + 'px' }"></div>
         </template>
@@ -63,75 +63,17 @@ export default {
     this.$nextTick(() => {
       EventBus.$on('expandTask',(rowId, expand) => {
         if(this.row[this.mapFields['parentId']] === rowId) {
+          this.$nextTick(() => {
             this.showRow = expand
-            EventBus.$emit('expandTask',this.row.id,expand)
+            const bar = this.$refs.bar;
+            if(bar) {
+              this.drowBar(bar)
+              EventBus.$emit('expandTask',this.row.id,expand)
+            }
+
+          })
         }
       })
-
-      let that = this
-      let dataX = 0
-
-      switch (this.mode) {
-        case '月':
-        case '日': {
-          let fromPlanStartDays = this.$moment(this.row.start_date).diff(this.$moment(this.startGanttDate), 'days') 
-          //计算Bar起始x轴坐标
-          dataX = this.scale * fromPlanStartDays
-          //计算Bar的长度
-          let spendDays = this.$moment(this.row.end_date).diff(this.$moment(this.row.start_date), 'days') + 1
-          this.oldBarWidth = spendDays * this.scale
-          this.row.spend_time = spendDays + '天'
-          break
-        }
-        case '时': {
-          let fromPlanStartHours = this.$moment(this.row.start_date).diff(this.$moment(this.startGanttDate), 'hours') 
-          //计算Bar起始x轴坐标
-          dataX = this.scale * fromPlanStartHours
-          //计算Bar的长度
-          let spendHours = this.$moment(this.row.end_date).diff(this.$moment(this.row.start_date), 'hours') + 1
-          this.oldBarWidth = spendHours * this.scale
-          this.row.spend_time = spendHours + '小时'
-          break
-        }
-      }
-      this.oldBarDataX = dataX
-
-      const bar = this.$refs.bar;
-      let svg = Snap(bar);
-      //设置Bar起始x轴坐标
-      bar.setAttribute('data-x', dataX)
-      bar.setAttribute('width', this.oldBarWidth)
-      bar.style.webkitTransform =
-                    bar.style.transform =
-                    'translate(' + dataX + 'px, 0px)'
-      // 定义一个斜条纹的画笔
-      let p = svg.path("M10-5-10,15M15,0,0,15M0-5-20,15").attr({
-          fill: "none",
-          strokeOpacity: '.4',
-          stroke: "gray",
-          strokeWidth: 5
-      }).pattern(0, 0, 10, 10)
-      svg.rect(0, 0, this.oldBarWidth, this.barHeight, 10).attr({fill: p})
-      let g = svg.g();
-      let innerRect = svg.rect(0, 0, this.oldBarWidth / 2, this.barHeight, 10)
-      // 半透明
-      innerRect.attr({fill: 'red',fillOpacity: '.4'})
-      innerRect.attr({width: this.oldBarWidth / 2})
-      // 居中显示文字
-      let text = svg.text(innerRect.node.width.baseVal.value / 2, '50%', "50%").attr({
-          stroke: "#faf7ec",
-          dominantBaseline: 'middle',
-          fontSize: '15px'
-      });
-      // 文本居中
-      let xPosition = innerRect.node.width.baseVal.value / 2 - text.getBBox().width / 2
-      if( xPosition < 0) {
-        text.attr('x', innerRect.node.width.baseVal.value / 2)
-      } else {
-        text.attr('x', xPosition)
-      }
-      g.add(innerRect)
-      g.add(text)
 
       // 滚动条定位到 Bar 的开始位置
       EventBus.$on('moveToBarStart',(rowId) => {
@@ -143,7 +85,13 @@ export default {
           })
         }
       })
-      
+
+      let that = this
+      const bar = this.$refs.bar;
+      if(bar) {
+        this.drowBar(bar)
+      }
+ 
       // 滚动条定位到 Bar 的结束位置
       EventBus.$on('moveToBarEnd',(rowId) => {
         if(this.row.id === rowId) {
@@ -348,6 +296,69 @@ export default {
           }
       }
       return false;
+    },
+    drowBar(bar) {
+  
+      let dataX = 0
+      switch (this.mode) {
+        case '月':
+        case '日': {
+          let fromPlanStartDays = this.$moment(this.row.start_date).diff(this.$moment(this.startGanttDate), 'days') 
+          //计算Bar起始x轴坐标
+          dataX = this.scale * fromPlanStartDays
+          //计算Bar的长度
+          let spendDays = this.$moment(this.row.end_date).diff(this.$moment(this.row.start_date), 'days') + 1
+          this.oldBarWidth = spendDays * this.scale
+          this.row.spend_time = spendDays + '天'
+          break
+        }
+        case '时': {
+          let fromPlanStartHours = this.$moment(this.row.start_date).diff(this.$moment(this.startGanttDate), 'hours') 
+          //计算Bar起始x轴坐标
+          dataX = this.scale * fromPlanStartHours
+          //计算Bar的长度
+          let spendHours = this.$moment(this.row.end_date).diff(this.$moment(this.row.start_date), 'hours') + 1
+          this.oldBarWidth = spendHours * this.scale
+          this.row.spend_time = spendHours + '小时'
+          break
+        }
+      }
+      this.oldBarDataX = dataX
+      let svg = Snap(bar);
+      //设置Bar起始x轴坐标
+      bar.setAttribute('data-x', dataX)
+      bar.setAttribute('width', this.oldBarWidth)
+      bar.style.webkitTransform =
+                    bar.style.transform =
+                    'translate(' + dataX + 'px, 0px)'
+      // 定义一个斜条纹的画笔
+      let p = svg.path("M10-5-10,15M15,0,0,15M0-5-20,15").attr({
+          fill: "none",
+          strokeOpacity: '.4',
+          stroke: "gray",
+          strokeWidth: 5
+      }).pattern(0, 0, 10, 10)
+      svg.rect(0, 0, this.oldBarWidth, this.barHeight, 10).attr({fill: p})
+      let g = svg.g();
+      let innerRect = svg.rect(0, 0, this.oldBarWidth / 2, this.barHeight, 10)
+      // 半透明
+      innerRect.attr({fill: 'red',fillOpacity: '.4'})
+      innerRect.attr({width: this.oldBarWidth / 2})
+      // 居中显示文字
+      let text = svg.text(innerRect.node.width.baseVal.value / 2, '50%', "50%").attr({
+          stroke: "#faf7ec",
+          dominantBaseline: 'middle',
+          fontSize: '15px'
+      });
+      // 文本居中
+      let xPosition = innerRect.node.width.baseVal.value / 2 - text.getBBox().width / 2
+      if( xPosition < 0) {
+        text.attr('x', innerRect.node.width.baseVal.value / 2)
+      } else {
+        text.attr('x', xPosition)
+      }
+      g.add(innerRect)
+      g.add(text)
     }
   }
 }

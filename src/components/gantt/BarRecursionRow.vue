@@ -1,7 +1,7 @@
 <template>
  <div>
     <template v-for='(item, index) in tasks'>
-      <bar :key= "'row_' + index + '_' + scale" v-if='startGanttDate && endGanttDate' :startGanttDate='startGanttDate' :endGanttDate='endGanttDate' :row='item' :rowHeight='rowHeight'></bar>
+      <bar :key= "index + scale + startGanttDate + endGanttDate" :startGanttDate='startGanttDate' :endGanttDate='endGanttDate' :row='item' :rowHeight='rowHeight'></bar>
     </template>
  </div>
 </template>
