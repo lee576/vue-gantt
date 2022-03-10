@@ -2,7 +2,7 @@
   <div v-if='showRow'>
     <div style="border-top: 1px solid #cecece;margin:-2px 0px -1px -1px;"></div>
       <div class="barRow" v-bind:style="{ height: rowHeight + 'px'}">
-        <svg v-if='showRow' :key= "timelineCellCount + '_' + '_svg'" ref='bar' class="bar" :height="barHeight + 'px'"></svg>
+        <svg v-if='showRow' :key= "timelineCellCount + showRow" ref='bar' class="bar" :height="barHeight + 'px'"></svg>
         <template v-for='(count,index) in timelineCellCount'>
           <div class="cell" :key= "count + index + timelineCellCount + showRow + '_cell'" v-bind:style="{ minWidth: scale + 'px', maxWidth: scale + 'px',height: rowHeight + 'px' }"></div>
         </template>
