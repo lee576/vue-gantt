@@ -1,5 +1,5 @@
 <template>
-  <div v-if='showRow'>
+  <div v-if='showRow' @mouseover="hoverActive()" @mouseleave="hoverInactive()" :class="{ active: hover }">
     <div style="width: 100%;border-top: 1px solid #cecece;margin:0px 0px -1px -1px;"></div>
     <div class="row" v-bind:style="{ height: rowHeight + 'px' }">
       <template v-for='(header,headerIndex) in headers'>
@@ -45,7 +45,8 @@ export default {
   },
   data () {
     return {
-      showRow: true
+      showRow: true,
+      hover: false,
     }
   },
   computed: {
@@ -69,11 +70,20 @@ export default {
          return row[property]
        }
        else return null
+    },
+    hoverActive() {
+      this.hover = true
+    },
+    hoverInactive() {
+      this.hover = false
     }
   }
 }
 </script>
 <style lang='less' scoped>
+  .active {
+    background: #FFF3A1;
+  }
   .row {
     display: flex;
     flex-flow: row nowrap;
