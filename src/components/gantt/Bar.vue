@@ -1,5 +1,5 @@
 <template>
-  <div v-if='showRow'>
+  <div v-if='showRow' @mouseover="hoverActive()" @mouseleave="hoverInactive()" :class="{ active: hover }">
     <div style="border-top: 1px solid #cecece;margin:-2px 0px -1px -1px;"></div>
       <div class="barRow" v-bind:style="{ height: rowHeight + 'px'}">
         <svg v-if='showRow' ref='bar' class="bar" :height="barHeight + 'px'"></svg>
@@ -42,6 +42,7 @@ export default {
       oldBarDataX: 0,
       oldBarWidth: 0,
       showRow: true,
+      hover: false,
     };
 	},
 	computed: {
@@ -61,6 +62,13 @@ export default {
 	created() {},
 	mounted() {
     this.$nextTick(() => {
+      // 响应 Task hover 事件
+      EventBus.$on('barHover',(rowId, hover) => {
+        if(this.row[this.mapFields['id']] === rowId) {
+          this.hover = hover
+        }
+      })
+
       // 响应展开和折叠事件
       EventBus.$on('expandTask',(rowId, expand) => {
         if(this.row[this.mapFields['parentId']] === rowId) {
@@ -350,11 +358,22 @@ export default {
         event.target.setAttribute('data-x', x)
         event.target.setAttribute('data-y', 0)
       }
+    },
+    hoverActive() {
+      this.hover = true
+      EventBus.$emit('taskHover',this.row[this.mapFields['id']],this.hover)
+    },
+    hoverInactive() {
+      this.hover = false
+      EventBus.$emit('taskHover',this.row[this.mapFields['id']],this.hover)
     }
   }
 }
 </script>
 <style lang='less' scoped>
+  .active {
+    background: #FFF3A1;
+  }
   .barRow {
     display: flex;
     flex-flow: row nowrap;

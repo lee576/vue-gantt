@@ -61,6 +61,12 @@ export default {
           EventBus.$emit('expandTask',this.row[this.mapFields['id']],expand)
        }
     })
+    // 响应 Task hover 事件
+    EventBus.$on('taskHover',(rowId, hover) => {
+      if(this.row[this.mapFields['id']] === rowId) {
+        this.hover = hover
+      }
+    })
 	},
   methods: {
     checkField(row, property) {
@@ -73,9 +79,11 @@ export default {
     },
     hoverActive() {
       this.hover = true
+      EventBus.$emit('barHover',this.row[this.mapFields['id']],this.hover)
     },
     hoverInactive() {
       this.hover = false
+      EventBus.$emit('barHover',this.row[this.mapFields['id']],this.hover)
     }
   }
 }
