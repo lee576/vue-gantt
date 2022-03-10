@@ -41,7 +41,7 @@ export default {
     },
     expandClick(event, row) {
       this.expand = !this.expand
-      EventBus.$emit('expandTask',row.id,this.expand)
+      EventBus.$emit('expandTask',row[this.mapFields['id']],this.expand)
     }
   }
 }

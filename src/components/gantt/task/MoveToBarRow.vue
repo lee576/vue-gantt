@@ -35,7 +35,7 @@ export default {
     EventBus.$on('expandTask',(rowId, expand) => {
        if(this.row[this.mapFields['parentId']] === rowId) {
           this.showRow = expand
-          EventBus.$emit('expandTask',this.row.id,expand)
+          EventBus.$emit('expandTask',this.row[this.mapFields['id']],expand)
        }
     })
 	},
@@ -49,13 +49,13 @@ export default {
   },
   methods: {
     goBarStart(event,row) {
-      if(row && row.id) {
-        EventBus.$emit('moveToBarStart',row.id)
+      if(row && row[this.mapFields['id']]) {
+        EventBus.$emit('moveToBarStart',row[this.mapFields['id']])
       }
     },
     goBarEnd(event,row) {
-      if(row && row.id) {
-        EventBus.$emit('moveToBarEnd',row.id)
+      if(row && row[this.mapFields['id']]) {
+        EventBus.$emit('moveToBarEnd',row[this.mapFields['id']])
       }
     }
   }

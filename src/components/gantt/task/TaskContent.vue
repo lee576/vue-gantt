@@ -4,7 +4,7 @@
     <div class="moveToBar" :style= "{position: 'absolute',top:'0px',right:'0px',width:'40px',zIndex: '30',height : tasks.length * rowHeight + 'px'}">
       <MoveToBarRecursion :rowHeight='rowHeight' :tasks='tasks'></MoveToBarRecursion>
     </div>
-    <div class="expandBar" :style= "{position: 'absolute',top:'0px',left:'0px',width:'40px',zIndex: '30',height : tasks.length * rowHeight + 'px'}">
+    <div class="expandBar" :style= "{position: 'absolute',top:'0px',left:'0px',width:'25px',zIndex: '30',height : tasks.length * rowHeight + 'px'}">
       <ExpandTaskRecursion :rowHeight='rowHeight' :tasks='tasks'></ExpandTaskRecursion>
     </div> 
   </div>

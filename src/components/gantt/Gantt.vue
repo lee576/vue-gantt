@@ -64,22 +64,15 @@ export default {
     mapFields: {
       type: Object,
       default: () => {}
+    },
+    taskHeaders: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
       initData : [],
-      // 任务表头
-      taskHeaders : [      
-        {title: 'ID', width: 20, property:'id',show: false},
-        {title: 'PID', width: 20, property:'parentId',show: false},
-        {title: '序号', width: 120, property:'no',show: true},
-        {title: '任务名称', width: 190, property:'task',show: true},
-        {title: '优先级', width: 90, property: 'priority',show: true},
-        {title: '开始时间', width: 150, property: 'startdate',show: true},
-        {title: '结束时间', width: 150, property: 'enddate',show: true},
-        {title: '耗时', width: 90, property: 'takestime',show: true}
-      ],
       paneLengthPercent: 35,
       buttonClass: ["button is-active","button","button"],
       mode: '月',
@@ -195,7 +188,6 @@ export default {
     this.mode = '月'
     let level = 0;
     this.RecursionData('0',this.tasks,level)
-    console.log(this.initData)
     this.setTasks(this.initData)
 	},
   methods:{
@@ -209,8 +201,10 @@ export default {
     RecursionData(id, tasks, level) {
       let findResult = tasks.filter(obj => obj[this.mapFields['parentId']] === id)
       if(findResult && findResult.length > 0) {
+         level++ //递归的层级
          for(let i = 0;i < findResult.length; i++)
          { 
+           findResult[i].treeLevel = level
            findResult[i].index = i + 1
            let parent = this.initData.filter(obj => obj[this.mapFields['id']] === findResult[i][this.mapFields['parentId']])
            this.result = ''
