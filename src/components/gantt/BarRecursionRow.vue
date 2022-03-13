@@ -10,37 +10,42 @@ import { store } from '@/components/gantt/store.js'
 import Bar from '../gantt/Bar.vue'
 export default {
   name: 'BarRecursionRow',
-    props : {
-      rowHeight: {
-        type: Number,
-        default: 0
-      },
-      tasks: {
-        type: Array,
-        default: () => []
+  props: {
+    rowHeight: {
+      type: Number,
+      default: 0
+    },
+    tasks: {
+      type: Array,
+      default: () => []
     }
   },
   computed: {
-    allTask (){
+    allTask () {
       return store.tasks
     },
-    timelineCellCount (){
+    timelineCellCount () {
       return store.timelineCellCount
     },
-    scale (){
+    scale () {
       return store.scale
     },
-    startGanttDate(){
+    startGanttDate () {
       return store.startGanttDate
     },
-    endGanttDate(){
+    endGanttDate () {
       return store.endGanttDate
     },
-    mapFields(){
+    mapFields () {
       return store.mapFields
     }
   },
   components: {Bar},
+  mounted () {
+    this.$nextTick(() => {
+      console.log('barContent')
+    })
+  },
   methods: {
   }
 }

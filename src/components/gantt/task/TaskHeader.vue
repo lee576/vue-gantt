@@ -1,29 +1,29 @@
 <template>
   <div class="header">
     <template v-for='(item, index) in headers'>
-      <div v-show="item.show" class="headerCaption" :key="index"><span v-bind:style="{ width: item.width + 'px' }">{{item.title}}</span></div>
+      <div :property='item.property' :columnindex='index' v-show="item.show" class="headerCaption" :key="index"><span v-bind:style="{ width: item.width + 'px' }">{{item.title}}</span></div>
     </template>
   </div>
 </template>
 <script>
 export default {
-  props : {
+  props: {
     headers: {
       type: Array,
       default: () => []
     }
   },
-	components: {},
-	data() {
-		return {};
-	},
-	computed: {},
-	watch: {},
-	created() {
+  components: {},
+  data () {
+    return {}
   },
-	mounted() {
-	},
-	methods: {
+  computed: {},
+  watch: {},
+  created () {
+  },
+  mounted () {
+  },
+  methods: {
   }
 }
 </script>

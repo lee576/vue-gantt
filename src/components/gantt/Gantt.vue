@@ -31,7 +31,7 @@
     <div class="gantt">
       <SplitPane direction="row" :min="10" :max="80" :triggerLength="10" :paneLengthPercent.sync="paneLengthPercent">
         <template v-slot:one>
-          <task-table :headersHeight='headersHeight' :rowHeight='rowHeight'></task-table>     
+          <task-table :headersHeight='headersHeight' :rowHeight='rowHeight'></task-table>
         </template>
         <template v-slot:two>
           <gantt-table ref='barContent' :headersHeight='headersHeight' :rowHeight='rowHeight'></gantt-table>
@@ -47,9 +47,10 @@ import GanttTable from './Table.vue'
 import TaskTable from './task/TaskTable.vue'
 import { mutations } from '@/components/gantt/store.js'
 import Vue from 'vue'
+import { EventBus } from './EventBus'
 export default {
-  props : {
-    headersHeight : {
+  props: {
+    headersHeight: {
       type: Number,
       default: 50
     },
@@ -70,11 +71,11 @@ export default {
       default: () => []
     }
   },
-  data() {
+  data () {
     return {
-      initData : [],
+      initData: [],
       paneLengthPercent: 35,
-      buttonClass: ["button is-active","button","button"],
+      buttonClass: ['button is-active', 'button', 'button'],
       mode: '月',
       // 开始日期默认值
       startDate: this.$moment().locale('zh-cn').format('YYYY-MM-DD'),
@@ -91,11 +92,11 @@ export default {
       // 月度表头
       monthHeaders: [],
       // 日表头
-      dayHeaders : [],
+      dayHeaders: [],
       // 小时表头
-      hourHeaders : [],
+      hourHeaders: [],
       // 表头最小单位宽度
-      scale : 0,
+      scale: 0,
       // 时间刻度一行有多少个单元格
       timelineCellCount: 0,
       // 甘特图开始时间
@@ -105,8 +106,8 @@ export default {
       result: ''
     }
   },
-	components: { GanttTable, TaskTable, SplitPane, DatePicker },
-	watch: {
+  components: { GanttTable, TaskTable, SplitPane, DatePicker },
+  watch: {
     // 时间表头最小单位宽度,所有表头的宽度都是他的倍数
     scale: function (newVal, oldVal) {
       if (newVal != oldVal) {
@@ -139,11 +140,11 @@ export default {
     },
     // 选择开始日期
     selectedStartDate: function () {
-       this.setTimeLineHeaders(this.mode)
+      this.setTimeLineHeaders(this.mode)
     },
     // 选择结束日期
     selectedEndDate: function () {
-       this.setTimeLineHeaders(this.mode)
+      this.setTimeLineHeaders(this.mode)
     },
     // 切换缩放单位(月/日/时)
     mode: function (newVal) {
@@ -171,7 +172,7 @@ export default {
       this.setEndGanttDate(newVal)
     }
   },
-	created() {
+  created () {
     this.setMonthHeaders(this.monthHeaders)
     this.setDayHeaders(this.dayHeaders)
     this.setHourHeaders(this.hourHeaders)
@@ -181,44 +182,42 @@ export default {
     this.setTimelineCellCount(this.timelineCellCount)
     this.setMode(this.mode)
   },
-	mounted() {
+  mounted () {
     this.monthHeaders = []
     this.dayHeaders = []
     this.hourHeaders = []
-    this.mode = '月'
-    let level = 0;
-    this.RecursionData('0',this.tasks,level)
+    this.timeMode('月')
+    let level = 0
+    this.RecursionData('0', this.tasks, level)
     this.setTasks(this.initData)
-	},
-  methods:{
-    FindAllParent(targetData,pid) {
+  },
+  methods: {
+    FindAllParent (targetData, pid) {
       let parent = targetData.filter(obj => obj[this.mapFields['id']] === pid)
-      if(parent && parent.length > 0) {
-        this.result = parent[0].index + '.' + this.result 
-        this.FindAllParent(targetData,parent[this.mapFields['parentId']])
+      if (parent && parent.length > 0) {
+        this.result = parent[0].index + '.' + this.result
+        this.FindAllParent(targetData, parent[this.mapFields['parentId']])
       }
     },
-    RecursionData(id, tasks, level) {
+    RecursionData (id, tasks, level) {
       let findResult = tasks.filter(obj => obj[this.mapFields['parentId']] === id)
-      if(findResult && findResult.length > 0) {
-         level++ //递归的层级
-         for(let i = 0;i < findResult.length; i++)
-         { 
-           findResult[i].treeLevel = level
-           findResult[i].index = i + 1
-           let parent = this.initData.filter(obj => obj[this.mapFields['id']] === findResult[i][this.mapFields['parentId']])
-           this.result = ''
-           if(parent && parent.length > 0) {
-              this.result = parent[0].index + '.' + findResult[i].index
-              this.FindAllParent(this.initData,parent[0][this.mapFields['parentId']])
-              findResult[i].no = this.result
-           }
-           else {
-             findResult[i].no = i + 1 + ''
-           }
-           this.initData.push(findResult[i])
-           this.RecursionData(findResult[i][this.mapFields['id']],tasks,level)
-         }
+      if (findResult && findResult.length > 0) {
+        level++ // 递归的层级
+        for (let i = 0; i < findResult.length; i++) {
+          findResult[i].treeLevel = level
+          findResult[i].index = i + 1
+          let parent = this.initData.filter(obj => obj[this.mapFields['id']] === findResult[i][this.mapFields['parentId']])
+          this.result = ''
+          if (parent && parent.length > 0) {
+            this.result = parent[0].index + '.' + findResult[i].index
+            this.FindAllParent(this.initData, parent[0][this.mapFields['parentId']])
+            findResult[i].no = this.result
+          } else {
+            findResult[i].no = i + 1 + ''
+          }
+          this.initData.push(findResult[i])
+          this.RecursionData(findResult[i][this.mapFields['id']], tasks, level)
+        }
       }
     },
     setDayHeaders: mutations.setDayHeaders,
@@ -235,149 +234,151 @@ export default {
     // 修改按钮样式
     timeMode (mode) {
       this.$refs.barContent.scrollLeft = 0
-      for(let button of this.buttonClass){
-        Vue.set(this.buttonClass,this.buttonClass.indexOf(button),'button')
+      for (let button of this.buttonClass) {
+        Vue.set(this.buttonClass, this.buttonClass.indexOf(button), 'button')
       }
-      switch (mode)
-      {
+      switch (mode) {
         case '月': {
-          Vue.set(this.buttonClass,0,'button is-active')
-          break;       
+          Vue.set(this.buttonClass, 0, 'button is-active')
+          break
         }
         case '日': {
-          Vue.set(this.buttonClass,1,'button is-active')
-          break;
+          Vue.set(this.buttonClass, 1, 'button is-active')
+          break
         }
         case '时': {
-          Vue.set(this.buttonClass,2,'button is-active')
-          break;
+          Vue.set(this.buttonClass, 2, 'button is-active')
+          break
         }
       }
       this.mode = mode
       this.$forceUpdate()
     },
-    setTimeLineHeaders(newVal) {
+    setTimeLineHeaders (newVal) {
       // 开始时间格式是否合法
-      if(!this.$moment(this.selectedStartDate, 'YYYY-MM-DD', true).isValid())
-        return
+      if (!this.$moment(this.selectedStartDate, 'YYYY-MM-DD', true).isValid()) { return }
       // 结束时间格式是否合法
-      if(!this.$moment(this.selectedEndDate, 'YYYY-MM-DD', true).isValid())
-        return
+      if (!this.$moment(this.selectedEndDate, 'YYYY-MM-DD', true).isValid()) { return }
       // 检验开始时间结束时间范围的合法性
-      let days = this.$moment(this.selectedEndDate).diff(this.$moment(this.selectedStartDate),'days')
-      if(days < 0)
-        return
+      let days = this.$moment(this.selectedEndDate).diff(this.$moment(this.selectedStartDate), 'days')
+      if (days < 0) { return }
       this.startGanttDate = this.selectedStartDate + ' 00:00:00'
       this.endGanttDate = this.selectedEndDate + ' 23:59:59'
       this.dayHeaders = []
       this.monthHeaders = []
       this.hourHeaders = []
-      switch (newVal)
-      {
+      switch (newVal) {
         case '月': {
           this.scale = 80
-          let recurrence = this.$moment().recur(this.selectedStartDate, this.selectedEndDate).every(1).months();
-          let months = recurrence.all("L").map(x => this.$moment(x).locale('zh-cn').format('YYYY-MM-DD'))
+          let recurrence = this.$moment().recur(this.selectedStartDate, this.selectedEndDate).every(1).months()
+          let months = recurrence.all('L').map(x => this.$moment(x).locale('zh-cn').format('YYYY-MM-DD'))
 
-          let findIndex = months.findIndex((item) => { 
-            return this.$moment(item).locale('zh-cn').format('YYYY-MM') === this.$moment(this.selectedEndDate).locale('zh-cn').format('YYYY-MM') 
+          let findIndex = months.findIndex((item) => {
+            return this.$moment(item).locale('zh-cn').format('YYYY-MM') === this.$moment(this.selectedEndDate).locale('zh-cn').format('YYYY-MM')
           })
-          if(findIndex === -1) {
+          if (findIndex === -1) {
             months.push(this.$moment(this.selectedEndDate).locale('zh-cn').format('YYYY-MM-DD'))
           }
           // 时间跨度只有一个月
-          if(months.length == 1) {
+          if (months.length === 1) {
             let days = this.$moment(this.selectedEndDate).diff(this.$moment(this.selectedStartDate), 'days') + 1
             this.monthHeaders.push({title: this.$moment(months[0]).locale('zh-cn').format('MMMM'), width: days * this.scale})
-          }
-          else {
-            for(let month of months) {
+          } else {
+            for (let month of months) {
               let index = months.indexOf(month)
               // 第一月
-              if(index === 0) {
-                let endOfMonth = this.$moment(this.selectedStartDate).endOf('month').format("YYYY-MM-DD")
+              if (index === 0) {
+                let endOfMonth = this.$moment(this.selectedStartDate).endOf('month').format('YYYY-MM-DD')
                 let days = this.$moment(endOfMonth).diff(this.$moment(this.selectedStartDate), 'days') + 1
                 this.monthHeaders.push({title: this.$moment(month).locale('zh-cn').format('MMMM'), width: days * this.scale})
               }
               // 最后一个月
-              else if(index === months.length - 1) {
-                let startOfMonth = this.$moment(this.selectedEndDate).startOf('month').format("YYYY-MM-DD")
+              else if (index === months.length - 1) {
+                let startOfMonth = this.$moment(this.selectedEndDate).startOf('month').format('YYYY-MM-DD')
                 let days = this.$moment(this.selectedEndDate).diff(this.$moment(startOfMonth), 'days') + 1
                 this.monthHeaders.push({title: this.$moment(month).locale('zh-cn').format('MMMM'), width: days * this.scale})
               }
               // 中间的月
               else {
-                let days = this.$moment(month, "YYYY-MM").daysInMonth()
+                let days = this.$moment(month, 'YYYY-MM').daysInMonth()
                 this.monthHeaders.push({title: this.$moment(month).locale('zh-cn').format('MMMM'), width: days * this.scale})
               }
             }
           }
 
-          recurrence = this.$moment().recur(this.selectedStartDate, this.selectedEndDate).every(1).days();
-          let captions = recurrence.all("L").map(x => this.$moment(x).locale('zh-cn').format('DD日'))
-          for(let caption of captions) {
+          recurrence = this.$moment().recur(this.selectedStartDate, this.selectedEndDate).every(1).days()
+          let captions = recurrence.all('L').map(x => this.$moment(x).locale('zh-cn').format('DD日'))
+          for (let caption of captions) {
             this.dayHeaders.push({title: caption, width: this.scale})
           }
           this.timelineCellCount = this.dayHeaders.length
-          break;       
+          break
         }
         case '日': {
           this.scale = 80
-          let recurrence = this.$moment().recur(this.selectedStartDate, this.selectedEndDate).every(1).days();
-          let captions = recurrence.all("L").map(x => this.$moment(x).locale('zh-cn').format('MMMM DD日'))
-          for(let caption of captions) {
+          let recurrence = this.$moment().recur(this.selectedStartDate, this.selectedEndDate).every(1).days()
+          let captions = recurrence.all('L').map(x => this.$moment(x).locale('zh-cn').format('MMMM DD日'))
+          for (let caption of captions) {
             this.dayHeaders.push({title: caption, width: this.scale})
           }
           this.timelineCellCount = this.dayHeaders.length
-          break;
+          break
         }
         case '时': {
           this.scale = 30
-          let recurrence = this.$moment().recur(this.selectedStartDate, this.selectedEndDate).every(1).days();
-          let captions = recurrence.all("L").map(x => this.$moment(x).locale('zh-cn').format('MMMM DD日'))
-          for(let caption of captions) {
+          let recurrence = this.$moment().recur(this.selectedStartDate, this.selectedEndDate).every(1).days()
+          let captions = recurrence.all('L').map(x => this.$moment(x).locale('zh-cn').format('MMMM DD日'))
+          for (let caption of captions) {
             this.dayHeaders.push({title: caption, width: 24 * this.scale})
-            for(let i= 0;i <= 23;i++){
+            for (let i = 0; i <= 23; i++) {
               this.hourHeaders.push({title: i + '点', width: this.scale})
             }
           }
           this.timelineCellCount = this.hourHeaders.length
-          break;
+          break
         }
       }
     },
-    openEndDatePicker() {
-      this.showEndDatePicker = true;
+    openEndDatePicker () {
+      this.showEndDatePicker = true
     },
-    openStartDatePicker() {
-      this.showStartDatePicker = true;
+    openStartDatePicker () {
+      this.showStartDatePicker = true
     },
-    confirmEnd(value) {
-      let days = this.$moment(value.date).diff(this.$moment(this.startDate),'days')
-      if(days < 0) {
-        this.selectedStartDate = value.date;
-        this.startDate = value.date;
+    confirmEnd (value) {
+      let days = this.$moment(value.date).diff(this.$moment(this.startDate), 'days')
+      if (days < 0) {
+        this.selectedStartDate = value.date
+        this.startDate = value.date
       }
-      this.showEndDatePicker = false;
-      this.selectedEndDate = value.date;
-      this.endDate = value.date;
+      this.showEndDatePicker = false
+      this.selectedEndDate = value.date
+      this.endDate = value.date
     },
-    confirmStart(value) {
-      let days = this.$moment(this.endDate).diff(this.$moment(value.date),'days')
-      if(days < 0) {
-        this.selectedEndDate = value.date;
-        this.endDate = value.date;
+    confirmStart (value) {
+      let days = this.$moment(this.endDate).diff(this.$moment(value.date), 'days')
+      if (days < 0) {
+        this.selectedEndDate = value.date
+        this.endDate = value.date
       }
-      this.showStartDatePicker = false;
-      this.selectedStartDate = value.date;
-      this.startDate = value.date;
+      this.showStartDatePicker = false
+      this.selectedStartDate = value.date
+      this.startDate = value.date
     },
-    cancelEnd() {
-      this.showEndDatePicker = false;
+    cancelEnd () {
+      this.showEndDatePicker = false
     },
-    cancelStart() {
-      this.showStartDatePicker = false;
-    },
+    cancelStart () {
+      this.showStartDatePicker = false
+    }
+  },
+  deactivated () {
+    // 使用了 keep-alive 注销掉所有事件
+    EventBus.$off()
+  },
+  beforeDestory () {
+    // 组件销毁前注销掉所有事件
+    EventBus.$off()
   }
 }
 </script>

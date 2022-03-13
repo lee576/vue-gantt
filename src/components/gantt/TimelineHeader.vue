@@ -19,7 +19,7 @@
 </template>
 <script>
 export default {
-  props : {
+  props: {
     dayHeaders: {
       type: Array,
       default: () => []
@@ -33,17 +33,17 @@ export default {
       default: () => []
     }
   },
-	components: {},
-	data() {
-		return {};
-	},
-	computed: {},
-	watch: {},
-	created() {
+  components: {},
+  data () {
+    return {}
   },
-	mounted() {
-	},
-	methods: {
+  computed: {},
+  watch: {},
+  created () {
+  },
+  mounted () {
+  },
+  methods: {
   }
 }
 </script>

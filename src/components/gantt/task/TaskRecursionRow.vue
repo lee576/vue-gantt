@@ -13,8 +13,8 @@ import TaskRow from './TaskRow.vue'
 // import { EventBus }  from '../EventBus.js'
 export default {
   name: 'TaskRecursionRow',
-  components : { TaskRow },
-  props : {
+  components: { TaskRow },
+  props: {
     headers: {
       type: Array,
       default: () => []
@@ -22,23 +22,23 @@ export default {
     rowHeight: {
       type: Number,
       default: 0
-    },
+    }
   },
   computed: {
-    mapFields(){
+    mapFields () {
       return store.mapFields
     },
-    tasks() {
+    tasks () {
       return store.tasks
     },
-    timelineCellCount() {
+    timelineCellCount () {
       return store.timelineCellCount
-    },
+    }
   },
   watch: {
   },
-  mounted() {
-	},
+  mounted () {
+  },
   methods: {
   }
 }

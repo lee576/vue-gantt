@@ -14,9 +14,9 @@
 </template>
 <script>
 import { store } from '@/components/gantt/store.js'
-import { EventBus }  from '../EventBus.js'
+import { EventBus } from '../EventBus.js'
 export default {
-  props : {
+  props: {
     rowHeight: {
       type: Number,
       default: 0
@@ -26,36 +26,36 @@ export default {
       default: () => {}
     }
   },
-  data() {
-		return {
+  data () {
+    return {
       showRow: true
-    };
-	},
-  mounted() {
-    EventBus.$on('expandTask',(rowId, expand) => {
-       if(this.row[this.mapFields['parentId']] === rowId) {
-          this.showRow = expand
-          EventBus.$emit('expandTask',this.row[this.mapFields['id']],expand)
-       }
+    }
+  },
+  mounted () {
+    EventBus.$on('expandTask', (rowId, expand) => {
+      if (this.row[this.mapFields['parentId']] === rowId) {
+        this.showRow = expand
+        EventBus.$emit('expandTask', this.row[this.mapFields['id']], expand)
+      }
     })
-	},
+  },
   computed: {
-    mapFields(){
+    mapFields () {
       return store.mapFields
     },
-    allTask (){
+    allTask () {
       return store.tasks
     }
   },
   methods: {
-    goBarStart(event,row) {
-      if(row && row[this.mapFields['id']]) {
-        EventBus.$emit('moveToBarStart',row[this.mapFields['id']])
+    goBarStart (event, row) {
+      if (row && row[this.mapFields['id']]) {
+        EventBus.$emit('moveToBarStart', row[this.mapFields['id']])
       }
     },
-    goBarEnd(event,row) {
-      if(row && row[this.mapFields['id']]) {
-        EventBus.$emit('moveToBarEnd',row[this.mapFields['id']])
+    goBarEnd (event, row) {
+      if (row && row[this.mapFields['id']]) {
+        EventBus.$emit('moveToBarEnd', row[this.mapFields['id']])
       }
     }
   }

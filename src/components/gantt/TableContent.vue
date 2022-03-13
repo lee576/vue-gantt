@@ -5,12 +5,11 @@
   </div>
 </template>
 <script>
-import { store } from '@/components/gantt/store.js'
-import { EventBus }  from './EventBus.js'
-import { mutations } from '@/components/gantt/store.js'
+import { store, mutations } from '@/components/gantt/store.js'
+import { EventBus } from './EventBus.js'
 import BarRecursionRow from './BarRecursionRow.vue'
 export default {
-  props : {
+  props: {
     rowHeight: {
       type: Number,
       default: 0
@@ -20,55 +19,55 @@ export default {
       default: () => []
     }
   },
-	components: {BarRecursionRow},
-	data() {
-		return {
+  components: {BarRecursionRow},
+  data () {
+    return {
       scrollFlag: true
     }
-	},
+  },
   watch: {
     scrollFlag: function (newVal) {
-        this.setScrollFlag(newVal)
-    },
+      this.setScrollFlag(newVal)
+    }
   },
-	computed: {
-    tasks (){
+  computed: {
+    tasks () {
       return store.tasks
     },
-    timelineCellCount (){
+    timelineCellCount () {
       return store.timelineCellCount
     },
-    scale (){
+    scale () {
       return store.scale
     },
-    startGanttDate(){
+    startGanttDate () {
       return store.startGanttDate
     },
-    endGanttDate(){
+    endGanttDate () {
       return store.endGanttDate
     },
-    mapFields(){
+    mapFields () {
       return store.mapFields
     }
   },
-	created() {},
-	mounted() {
-    EventBus.$on('scroll',(scrollTop) => {
+  created () {},
+  mounted () {
+    EventBus.$on('scroll', (scrollTop) => {
       this.$refs.barContent.scrollTop = scrollTop
     })
-	},
-	methods: {
+  },
+  methods: {
     setScrollFlag: mutations.setScrollFlag,
     // 找出根节点
-    getRootNode() {
+    getRootNode () {
       return this.tasks.filter(obj => obj[this.mapFields['parentId']] === '0')
     },
-    scroll() {
-      if(this.scrollFlag) {
-        EventBus.$emit('scroll',this.$refs.barContent.scrollTop)
+    scroll () {
+      if (this.scrollFlag) {
+        EventBus.$emit('scroll', this.$refs.barContent.scrollTop)
       }
     },
-    mouseover() {
+    mouseover () {
       this.scrollFlag = true
     }
   }

@@ -3,8 +3,8 @@
     <div style="width: 100%;border-top: 1px solid #cecece;margin:0px 0px -1px -1px;"></div>
     <div class="row" v-bind:style="{ height: rowHeight + 'px' }">
       <template v-for='(header,headerIndex) in headers'>
-        <div class="cellNo" :key="headerIndex" v-if="header.property === 'no'" 
-             v-bind:style="{ minWidth: header.width + 'px', 
+        <div class="cellNo" :key="headerIndex" v-if="header.property === 'no'"
+             v-bind:style="{ minWidth: header.width + 'px',
                              maxWidth: header.width + 'px',
                              height: rowHeight + 'px',
                              paddingLeft: '40px'
@@ -27,9 +27,9 @@
 </template>
 <script>
 import { store } from '@/components/gantt/store.js'
-import { EventBus }  from '../EventBus.js'
+import { EventBus } from '../EventBus.js'
 export default {
-  props : {
+  props: {
     headers: {
       type: Array,
       default: () => []
@@ -46,44 +46,41 @@ export default {
   data () {
     return {
       showRow: true,
-      hover: false,
+      hover: false
     }
   },
   computed: {
-    mapFields(){
+    mapFields () {
       return store.mapFields
     }
   },
-  mounted() {
-    EventBus.$on('expandTask',(rowId, expand) => {
-       if(this.row[this.mapFields['parentId']] === rowId) {
-          this.showRow = expand
-          EventBus.$emit('expandTask',this.row[this.mapFields['id']],expand)
-       }
+  mounted () {
+    EventBus.$on('expandTask', (rowId, expand) => {
+      if (this.row[this.mapFields['parentId']] === rowId) {
+        this.showRow = expand
+        EventBus.$emit('expandTask', this.row[this.mapFields['id']], expand)
+      }
     })
     // 响应 Task hover 事件
-    EventBus.$on('taskHover',(rowId, hover) => {
-      if(this.row[this.mapFields['id']] === rowId) {
+    EventBus.$on('taskHover', (rowId, hover) => {
+      if (this.row[this.mapFields['id']] === rowId) {
         this.hover = hover
       }
     })
-	},
+  },
   methods: {
-    checkField(row, property) {
-       if(this.mapFields[property])
-         return row[this.mapFields[property]]
-       else if(row[property]){
-         return row[property]
-       }
-       else return null
+    checkField (row, property) {
+      if (this.mapFields[property]) { return row[this.mapFields[property]] } else if (row[property]) {
+        return row[property]
+      } else return null
     },
-    hoverActive() {
+    hoverActive () {
       this.hover = true
-      EventBus.$emit('barHover',this.row[this.mapFields['id']],this.hover)
+      EventBus.$emit('barHover', this.row[this.mapFields['id']], this.hover)
     },
-    hoverInactive() {
+    hoverInactive () {
       this.hover = false
-      EventBus.$emit('barHover',this.row[this.mapFields['id']],this.hover)
+      EventBus.$emit('barHover', this.row[this.mapFields['id']], this.hover)
     }
   }
 }
@@ -118,7 +115,7 @@ export default {
         align-items: center;
         justify-content: space-evenly;
         position:absolute;
-        right: 0px; 
+        right: 0px;
         width: 30px;
         .btn {
           width: 15px;

@@ -13,11 +13,11 @@
 <script>
 import TableContent from './TableContent.vue'
 import TimelineHeader from './TimelineHeader.vue'
-import { EventBus }  from './EventBus.js'
+import { EventBus } from './EventBus.js'
 import { store } from '@/components/gantt/store.js'
 export default {
-  props : {
-    headersHeight : {
+  props: {
+    headersHeight: {
       type: Number,
       default: 50
     },
@@ -26,13 +26,13 @@ export default {
       default: 50
     }
   },
-	components: { TableContent, TimelineHeader },
-	data() {
-		return {
-    };
-	},
-	computed: {
-    dayHeaders (){
+  components: { TableContent, TimelineHeader },
+  data () {
+    return {
+    }
+  },
+  computed: {
+    dayHeaders () {
       return store.dayHeaders
     },
     monthHeaders () {
@@ -42,20 +42,20 @@ export default {
       return store.hourHeaders
     }
   },
-	watch: {
+  watch: {
 
   },
-	created() {},
-	mounted() {
+  created () {},
+  mounted () {
     this.$nextTick(() => {
-       EventBus.$on('scrollToBar',(left) => {
-          if(this.$refs.tableBar) {
-            this.$refs.tableBar.scrollLeft = left
-          }      
-       })
+      EventBus.$on('scrollToBar', (left) => {
+        if (this.$refs.tableBar) {
+          this.$refs.tableBar.scrollLeft = left
+        }
+      })
     })
-	},
-	methods: {
+  },
+  methods: {
 
   }
 }
