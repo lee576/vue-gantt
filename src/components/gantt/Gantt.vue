@@ -27,9 +27,7 @@
         <div :class="buttonClass[1]" style="border-left:0;border-right:0" @click="timeMode('日')"><div class="text">日</div></div>
         <div :class="buttonClass[2]" style="border-radius:0 10px 10px 0;" @click="timeMode('时')"><div class="text">时</div></div>
       </div>
-      <div class="buttonGroup">
-        <div class="button is-active" style="border-radius:10px;width:120px;" @click="scrollToToday()"><div class="text">定位到今天</div></div>
-      </div>
+      
     </div>
     <div class="gantt">
       <SplitPane direction="row" :min="10" :max="80" :triggerLength="10" :paneLengthPercent.sync="paneLengthPercent">
@@ -237,9 +235,6 @@ export default {
     })
   },
   methods: {
-    scrollToToday () {
-      EventBus.$emit('scrollToToday')
-    },
     // 查找所有父节点id并用.分隔拼接返回
     FindAllParent (targetData, pid) {
       let parent = targetData.filter(obj => obj[this.dataConfig.mapFields['id']] === pid)
@@ -440,6 +435,7 @@ export default {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+
   .toolbar {
     height: @toolbarHeight;
     width: 100%;
