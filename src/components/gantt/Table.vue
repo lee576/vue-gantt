@@ -74,12 +74,12 @@ export default {
         case '月':
         case '日': {
           this.$refs.tableBar.scrollLeft =
-          Number(this.$moment(this.$moment()).diff(this.$moment(this.startGanttDate), 'days')) * Number(this.scale)
+          Number(this.$moment(this.$moment().format('YYYY-MM-DD')).diff(this.$moment(this.startGanttDate), 'days')) * Number(this.scale)
           break
         }
         case '时': {
           this.$refs.tableBar.scrollLeft =
-          Number(this.$moment(this.$moment()).diff(this.$moment(this.startGanttDate), 'hours')) * Number(this.scale)
+          Number(this.$moment(this.$moment().format('YYYY-MM-DD')).diff(this.$moment(this.startGanttDate), 'hours')) * Number(this.scale)
           break
         }
       }
