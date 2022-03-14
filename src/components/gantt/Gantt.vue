@@ -27,14 +27,17 @@
         <div :class="buttonClass[1]" style="border-left:0;border-right:0" @click="timeMode('日')"><div class="text">日</div></div>
         <div :class="buttonClass[2]" style="border-radius:0 10px 10px 0;" @click="timeMode('时')"><div class="text">时</div></div>
       </div>
+      <div class="buttonGroup">
+        <div class="button is-active" style="border-radius:10px;width:120px;" @click="scrollToToday()"><div class="text">定位到今天</div></div>
+      </div>
     </div>
     <div class="gantt">
       <SplitPane direction="row" :min="10" :max="80" :triggerLength="10" :paneLengthPercent.sync="paneLengthPercent">
         <template v-slot:one>
-          <task-table :headersHeight='headersHeight' :rowHeight='rowHeight'></task-table>
+          <task-table :headersHeight='styleConfig.headersHeight' :rowHeight='styleConfig.rowHeight'></task-table>
         </template>
         <template v-slot:two>
-          <gantt-table ref='barContent' :headersHeight='headersHeight' :rowHeight='rowHeight'></gantt-table>
+          <gantt-table ref='barContent' :headersHeight='styleConfig.headersHeight' :rowHeight='styleConfig.rowHeight'></gantt-table>
         </template>
       </SplitPane>
     </div>
@@ -50,25 +53,49 @@ import Vue from 'vue'
 import { EventBus } from './EventBus'
 export default {
   props: {
-    headersHeight: {
-      type: Number,
-      default: 50
-    },
-    rowHeight: {
-      type: Number,
-      default: 0
-    },
-    tasks: {
-      type: Array,
-      default: () => []
-    },
-    mapFields: {
+    styleConfig: {
       type: Object,
-      default: () => {}
+      required: true,
+      default: () => ({
+        // 表头高度
+        headersHeight: 100,
+        // 行高
+        rowHeight: 60
+      }),
+      // 验证参数合法性
+      validator: (value) => {
+        return typeof value.headersHeight === 'number' &&
+               typeof value.rowHeight === 'number' &&
+               value.headersHeight > 0 && value.rowHeight > 0
+      }
     },
-    taskHeaders: {
-      type: Array,
-      default: () => []
+    dataConfig: {
+      type: Object,
+      required: true,
+      default: () => ({
+        // 任务
+        dataSource: () => [],
+        // 任务表头
+        taskHeaders: () => [],
+        // 数据字段映射
+        mapFields: () => {}
+      }),
+      // 验证参数合法性
+      validator: (value) => {
+        return Array.isArray(value.dataSource) &&
+               Array.isArray(value.taskHeaders) &&
+               typeof value.mapFields === 'object'
+      }
+    },
+    eventConfig: {
+      type: Object,
+      required: true,
+      // 验证参数合法性
+      validator: (value) => {
+        return typeof value.addRootTask === 'function' &&
+               typeof value.addSubTask === 'function' &&
+               typeof value.removeTask === 'function'
+      }
     }
   },
   data () {
@@ -109,34 +136,24 @@ export default {
   components: { GanttTable, TaskTable, SplitPane, DatePicker },
   watch: {
     // 时间表头最小单位宽度,所有表头的宽度都是他的倍数
-    scale: function (newVal, oldVal) {
-      if (newVal != oldVal) {
-        this.setScale(newVal)
-      }
+    scale: function (newVal) {
+      this.setScale(newVal)
     },
     // 任务表头
-    taskHeaders: function (newVal, oldVal) {
-      if (newVal != oldVal) {
-        this.setTaskHeaders(newVal)
-      }
+    'dataConfig.taskHeaders': function (newVal) {
+      this.setTaskHeaders(newVal)
     },
     // 月度表头
-    monthHeaders: function (newVal, oldVal) {
-      if (newVal != oldVal) {
-        this.setMonthHeaders(newVal)
-      }
+    monthHeaders: function (newVal) {
+      this.setMonthHeaders(newVal)
     },
     // 日表头
-    dayHeaders: function (newVal, oldVal) {
-      if (newVal != oldVal) {
-        this.setDayHeaders(newVal)
-      }
+    dayHeaders: function (newVal) {
+      this.setDayHeaders(newVal)
     },
     // 小时表头
-    hourHeaders: function (newVal, oldVal) {
-      if (newVal != oldVal) {
-        this.setHourHeaders(newVal)
-      }
+    hourHeaders: function (newVal) {
+      this.setHourHeaders(newVal)
     },
     // 选择开始日期
     selectedStartDate: function () {
@@ -152,12 +169,24 @@ export default {
       this.setTimeLineHeaders(newVal)
     },
     // 任务
-    tasks: function (newVal) {
+    'dataConfig.dataSource': function (newVal) {
       this.setTasks(newVal)
     },
     // 字段映射
-    mapFields: function (newVal) {
+    'dataConfig.mapFields': function (newVal) {
       this.setMapFields(newVal)
+    },
+    'dataConfig.queryStartDate': function (newVal) {
+      this.setStartGanttDate(newVal)
+      this.startGanttDate = this.dataConfig.queryStartDate
+      this.selectedStartDate = this.dataConfig.queryStartDate
+      this.startDate = this.dataConfig.queryStartDate
+    },
+    'dataConfig.queryEndDate': function (newVal) {
+      this.setEndGanttDate(newVal)
+      this.endGanttDate = this.dataConfig.queryEndDate
+      this.selectedEndDate = this.dataConfig.queryEndDate
+      this.endDate = this.dataConfig.queryEndDate
     },
     // 时间刻度一行有多少个单元格
     timelineCellCount: function (newVal) {
@@ -176,9 +205,9 @@ export default {
     this.setMonthHeaders(this.monthHeaders)
     this.setDayHeaders(this.dayHeaders)
     this.setHourHeaders(this.hourHeaders)
-    this.setTaskHeaders(this.taskHeaders)
-    this.setTasks(this.tasks)
-    this.setMapFields(this.mapFields)
+    this.setTaskHeaders(this.dataConfig.taskHeaders)
+    this.setTasks(this.dataConfig.dataSource)
+    this.setMapFields(this.dataConfig.mapFields)
     this.setTimelineCellCount(this.timelineCellCount)
     this.setMode(this.mode)
   },
@@ -188,35 +217,56 @@ export default {
     this.hourHeaders = []
     this.timeMode('月')
     let level = 0
-    this.RecursionData('0', this.tasks, level)
+    this.RecursionData('0', this.dataConfig.dataSource, level)
     this.setTasks(this.initData)
+    // 添加根任务事件
+    EventBus.$on('addRootTask', (row) => {
+      this.eventConfig.addRootTask(row)
+    })
+    // 添加子任务事件
+    EventBus.$on('addSubTask', (row) => {
+      this.eventConfig.addSubTask(row)
+    })
+    // 删除任务事件
+    EventBus.$on('removeTask', (row) => {
+      this.eventConfig.removeTask(row)
+    })
+    // 编辑任务事件
+    EventBus.$on('editTask', (row) => {
+      this.eventConfig.editTask(row)
+    })
   },
   methods: {
+    scrollToToday () {
+      EventBus.$emit('scrollToToday')
+    },
+    // 查找所有父节点id并用.分隔拼接返回
     FindAllParent (targetData, pid) {
-      let parent = targetData.filter(obj => obj[this.mapFields['id']] === pid)
+      let parent = targetData.filter(obj => obj[this.dataConfig.mapFields['id']] === pid)
       if (parent && parent.length > 0) {
         this.result = parent[0].index + '.' + this.result
-        this.FindAllParent(targetData, parent[this.mapFields['parentId']])
+        this.FindAllParent(targetData, parent[this.dataConfig.mapFields['parentId']])
       }
     },
+    // 对数据进行递归加工
     RecursionData (id, tasks, level) {
-      let findResult = tasks.filter(obj => obj[this.mapFields['parentId']] === id)
+      let findResult = tasks.filter(obj => obj[this.dataConfig.mapFields['parentId']] === id)
       if (findResult && findResult.length > 0) {
         level++ // 递归的层级
         for (let i = 0; i < findResult.length; i++) {
           findResult[i].treeLevel = level
           findResult[i].index = i + 1
-          let parent = this.initData.filter(obj => obj[this.mapFields['id']] === findResult[i][this.mapFields['parentId']])
+          let parent = this.initData.filter(obj => obj[this.dataConfig.mapFields['id']] === findResult[i][this.dataConfig.mapFields['parentId']])
           this.result = ''
           if (parent && parent.length > 0) {
             this.result = parent[0].index + '.' + findResult[i].index
-            this.FindAllParent(this.initData, parent[0][this.mapFields['parentId']])
+            this.FindAllParent(this.initData, parent[0][this.dataConfig.mapFields['parentId']])
             findResult[i].no = this.result
           } else {
             findResult[i].no = i + 1 + ''
           }
           this.initData.push(findResult[i])
-          this.RecursionData(findResult[i][this.mapFields['id']], tasks, level)
+          this.RecursionData(findResult[i][this.dataConfig.mapFields['id']], tasks, level)
         }
       }
     },
@@ -417,6 +467,7 @@ export default {
       height: (@toolbarHeight / 1.5);
       display: flex;
       flex-direction: row;
+      margin-right: 20px;
       .is-active:not(.text), :active:not(.text) {
         background:#3a8ee6;
         border-color:#3a8ee6;

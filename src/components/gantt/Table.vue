@@ -40,6 +40,15 @@ export default {
     },
     hourHeaders () {
       return store.hourHeaders
+    },
+    startGanttDate () {
+      return store.startGanttDate
+    },
+    mode () {
+      return store.mode
+    },
+    scale () {
+      return store.scale
     }
   },
   watch: {
@@ -53,10 +62,28 @@ export default {
           this.$refs.tableBar.scrollLeft = left
         }
       })
+      EventBus.$on('scrollToToday', () => {
+        this.scrollToToday()
+      })
     })
   },
   methods: {
-
+    // 滚动条坐标移动到今天
+    scrollToToday () {
+      switch (this.mode) {
+        case '月':
+        case '日': {
+          this.$refs.tableBar.scrollLeft =
+          Number(this.$moment(this.$moment()).diff(this.$moment(this.startGanttDate), 'days')) * Number(this.scale)
+          break
+        }
+        case '时': {
+          this.$refs.tableBar.scrollLeft =
+          Number(this.$moment(this.$moment()).diff(this.$moment(this.startGanttDate), 'hours')) * Number(this.scale)
+          break
+        }
+      }
+    }
   }
 }
 </script>

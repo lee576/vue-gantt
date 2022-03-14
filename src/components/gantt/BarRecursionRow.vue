@@ -43,7 +43,6 @@ export default {
   components: {Bar},
   mounted () {
     this.$nextTick(() => {
-      console.log('barContent')
     })
   },
   methods: {
