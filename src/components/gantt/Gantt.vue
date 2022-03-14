@@ -356,8 +356,9 @@ export default {
 
           recurrence = this.$moment().recur(this.selectedStartDate, this.selectedEndDate).every(1).days()
           let captions = recurrence.all('L').map(x => this.$moment(x).locale('zh-cn').format('DD日'))
+          let fullDate = recurrence.all('L').map(x => this.$moment(x).format('YYYY-MM-DD'))
           for (let caption of captions) {
-            this.dayHeaders.push({title: caption, width: this.scale})
+            this.dayHeaders.push({title: caption, width: this.scale, fulldate: fullDate[captions.indexOf(caption)]})
           }
           this.timelineCellCount = this.dayHeaders.length
           break
@@ -366,8 +367,9 @@ export default {
           this.scale = 80
           let recurrence = this.$moment().recur(this.selectedStartDate, this.selectedEndDate).every(1).days()
           let captions = recurrence.all('L').map(x => this.$moment(x).locale('zh-cn').format('MMMM DD日'))
+          let fullDate = recurrence.all('L').map(x => this.$moment(x).format('YYYY-MM-DD'))
           for (let caption of captions) {
-            this.dayHeaders.push({title: caption, width: this.scale})
+            this.dayHeaders.push({title: caption, width: this.scale, fulldate: fullDate[captions.indexOf(caption)]})
           }
           this.timelineCellCount = this.dayHeaders.length
           break
@@ -376,8 +378,9 @@ export default {
           this.scale = 30
           let recurrence = this.$moment().recur(this.selectedStartDate, this.selectedEndDate).every(1).days()
           let captions = recurrence.all('L').map(x => this.$moment(x).locale('zh-cn').format('MMMM DD日'))
+          let fullDate = recurrence.all('L').map(x => this.$moment(x).format('YYYY-MM-DD'))
           for (let caption of captions) {
-            this.dayHeaders.push({title: caption, width: 24 * this.scale})
+            this.dayHeaders.push({title: caption, width: 24 * this.scale,fulldate: fullDate[captions.indexOf(caption)]})
             for (let i = 0; i <= 23; i++) {
               this.hourHeaders.push({title: i + '点', width: this.scale})
             }
