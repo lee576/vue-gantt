@@ -69,8 +69,8 @@ export default {
       top: 0px;
       right: 0px;
       position: absolute;
-      height: 40px;
-      width: 40px;
+      height: 30px;
+      width: 30px;
       :hover {
         fill: #3A8EE6;
       }

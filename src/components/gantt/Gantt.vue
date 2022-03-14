@@ -217,6 +217,7 @@ export default {
     let level = 0
     this.RecursionData('0', this.dataConfig.dataSource, level)
     this.setTasks(this.initData)
+    this.$nextTick(() => {
     // 添加根任务事件
     EventBus.$on('addRootTask', (row) => {
       this.eventConfig.addRootTask(row)
@@ -232,6 +233,8 @@ export default {
     // 编辑任务事件
     EventBus.$on('editTask', (row) => {
       this.eventConfig.editTask(row)
+    })
+    EventBus.$emit('scrollToToday')
     })
   },
   methods: {
