@@ -218,23 +218,30 @@ export default {
     this.RecursionData('0', this.dataConfig.dataSource, level)
     this.setTasks(this.initData)
     this.$nextTick(() => {
-    // 添加根任务事件
-    EventBus.$on('addRootTask', (row) => {
-      this.eventConfig.addRootTask(row)
-    })
-    // 添加子任务事件
-    EventBus.$on('addSubTask', (row) => {
-      this.eventConfig.addSubTask(row)
-    })
-    // 删除任务事件
-    EventBus.$on('removeTask', (row) => {
-      this.eventConfig.removeTask(row)
-    })
-    // 编辑任务事件
-    EventBus.$on('editTask', (row) => {
-      this.eventConfig.editTask(row)
-    })
-    EventBus.$emit('scrollToToday')
+      // 添加根任务事件
+      EventBus.$on('addRootTask', (row) => {
+        this.eventConfig.addRootTask(row)
+      })
+      // 添加子任务事件
+      EventBus.$on('addSubTask', (row) => {
+        this.eventConfig.addSubTask(row)
+      })
+      // 删除任务事件
+      EventBus.$on('removeTask', (row) => {
+        this.eventConfig.removeTask(row)
+      })
+      // 编辑任务事件
+      EventBus.$on('editTask', (row) => {
+        this.eventConfig.editTask(row)
+      })
+      // 横向滚动条滚动到今天的位置
+      EventBus.$emit('scrollToToday')
+      // 设置Bar的颜色
+      EventBus.$on('setBarColor', (row) => {
+        this.styleConfig.setBarColor(row,(color)=>{
+          EventBus.$emit('returnBarColor',row[this.dataConfig.mapFields['id']], color)
+        })
+      })
     })
   },
   methods: {

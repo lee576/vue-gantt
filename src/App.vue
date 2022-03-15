@@ -14,7 +14,9 @@ export default {
         // 表头高度
         headersHeight: 100,
         // 行高
-        rowHeight: 60
+        rowHeight: 60,
+        // 设置 Bar的颜色
+        setBarColor: this.setBarColor
       },
       // 数据源配置
       dataConfig: {
@@ -135,6 +137,18 @@ export default {
     },
     editTask (row) {
       console.log(row)
+    },
+    setBarColor(row, callback) {
+      if(row.level === '紧急')
+         callback('red')
+      else if(row.level === '重要')
+         callback('blue')
+      else if(row.level === '一般')
+         callback('gray')
+      else if(row.level === '不重要')
+         callback('yellow')
+      else
+         callback('black')
     }
   }
 }

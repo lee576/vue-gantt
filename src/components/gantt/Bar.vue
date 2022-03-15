@@ -42,7 +42,8 @@ export default {
       oldBarDataX: 0,
       oldBarWidth: 0,
       showRow: true,
-      hover: false
+      hover: false,
+      barColor: ''
     }
   },
   computed: {
@@ -59,7 +60,14 @@ export default {
       return store.mapFields
     }
   },
-  created () {},
+  created () {
+    //设置Bar的颜色 侦听事件接收配置返回的方法
+    EventBus.$on('returnBarColor', (rowId, color) => {
+      if (this.row[this.mapFields['id']] === rowId) {
+          this.barColor = color       
+      }
+    })
+  },
   mounted () {
     this.$nextTick(() => {
       // 响应 Task hover 事件
@@ -90,6 +98,9 @@ export default {
           })
         }
       })
+      
+      //设置Bar的颜色 传递事件调用配置的方法
+      EventBus.$emit('setBarColor',this.row)
 
       if (this.$refs.bar) {
         this.drowBar(this.$refs.bar)
@@ -169,8 +180,9 @@ export default {
       let g = svg.g()
       let innerRect = svg.rect(0, 0, this.oldBarWidth / 2, this.barHeight, 10)
       innerRect.attr({class: 'innerRect'})
+
       // 半透明
-      innerRect.attr({fill: 'red', fillOpacity: '.4'})
+      innerRect.attr({fill: this.barColor, fillOpacity: '.4'})
       innerRect.attr({width: this.oldBarWidth / 2})
       g.add(innerRect)
       let outerRect = svg.rect(0, 0, this.oldBarWidth, this.barHeight, 10).attr({fill: p, stroke: '#cecece', strokeWidth: '1px'})
@@ -305,7 +317,7 @@ export default {
             let g = svg.g()
             innerRect.attr({class: 'innerRect'})
             // 半透明
-            innerRect.attr({fill: 'red', fillOpacity: '.4'})
+            innerRect.attr({fill: this.barColor, fillOpacity: '.4'})
             innerRect.attr({width: event.rect.width / 2})
             g.add(innerRect)
             let outerRect = svg.rect(0, 0, event.rect.width, this.barHeight, 10).attr({fill: p, stroke: '#cecece', strokeWidth: '1px'})
