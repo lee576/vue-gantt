@@ -12,7 +12,11 @@ export let store = Vue.observable({
   startGanttDate: null,
   endGanttDate: null,
   scrollFlag: true,
-  mode: null
+  mode: null,
+  expandRow: {
+    pid : 0,
+    expand: true
+  }
 })
 export let mutations = {
   // 月度表头
@@ -62,5 +66,9 @@ export let mutations = {
   // 时间模式
   setMode (mode) {
     store.mode = mode
+  },
+  // 设置展开行
+  setExpandRow (expandRow) {
+    store.expandRow = expandRow
   }
 }

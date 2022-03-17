@@ -1,13 +1,13 @@
 <template>
  <div>
- <template v-for='(item, index) in tasks'>
-    <ExpandTaskRow :key="index + 'expandBar'" :rowHeight='rowHeight' :row='item'></ExpandTaskRow>
-  </template>
+ <template v-for='item in filterTask'>
+    <ExpandTaskRow :key="item.id + 'expandBar'" :rowHeight='rowHeight' :row='item'></ExpandTaskRow>
+ </template>
  </div>
 </template>
 <script>
 import { store } from '@/components/gantt/store.js'
-import { EventBus }  from '../EventBus.js'
+import { mutations } from '@/components/gantt/store.js'
 import ExpandTaskRow from './ExpandTaskRow.vue'
 export default {
   name: 'ExpandTaskRecursion',
@@ -24,25 +24,64 @@ export default {
   },  
   data() {
 		return {
-      expand: true
+      expand: true,
+      hiddenTask: [],
     };
 	},
+  watch: {
+    expandRow : function (newVal) {
+      this.hiddenTask = []
+      for(let i = 0;i < this.tasks.length;i++) {
+        if(this.tasks[i][this.mapFields['parentId']] === newVal.pid && newVal.expand === false) {
+          this.hiddenTask.push(this.tasks[i])
+        }
+      }
+    },
+  },
   computed: {
     mapFields(){
       return store.mapFields
     },
-    allTask (){
-      return store.tasks
-    }
+    filterTask (){
+      let innerTask = []
+      for(let i = 0;i < store.tasks.length; i++)
+      {
+         if(!this.hiddenTask.some(obj => obj.id === store.tasks[i].id))
+         {
+            innerTask.push(store.tasks[i])
+         }
+      }
+      return innerTask
+    },
+    expandRow : {
+      get: () => {
+        return store.expandRow
+      },
+      set: (newValue) => {
+        mutations.setExpandRow(newValue)
+      }
+    },
   },
   methods: {
+    setExpandRow: mutations.setExpandRow,
     checkShow(item) {
       return  this.allTask.some(task => task[this.mapFields['parentId']] === item[this.mapFields['id']]) //item[this.mapFields['parentId']] === '0'
     },
-    expandClick(event, row) {
-      this.expand = !this.expand
-      EventBus.$emit('expandTask',row[this.mapFields['id']],this.expand)
-    }
   }
 }
 </script>
+<style lang='less' scoped>
+.cell {
+  display: flex;
+  padding-left: 10px;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  border-top: 1px solid #cecece;
+  border-right: 0px solid #cecece;
+  border-bottom: 1px solid #cecece;
+  margin:0px 1px -1px -1px;
+  width: fit-content;
+  cursor:default;
+}
+</style>

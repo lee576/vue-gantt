@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <gantt :styleConfig='styleConfig' :dataConfig='dataConfig' :eventConfig='eventConfig'></gantt>
+     <gantt :styleConfig='styleConfig' :dataConfig='dataConfig' :eventConfig='eventConfig'></gantt>
   </div>
 </template>
 <script>

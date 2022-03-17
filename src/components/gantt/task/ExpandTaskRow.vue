@@ -43,16 +43,20 @@ export default {
     },
     allTask (){
       return store.tasks
-    }
+    },
+    expandRow(){
+      return store.expandRow
+    },
   },
   methods: {
     setTasks: mutations.setTasks,
+    setExpandRow: mutations.setExpandRow,
     checkShow(item) {
       return this.allTask.some(task => task[this.mapFields['parentId']] === item[this.mapFields['id']])
     },
     expandClick(event, row) {
       this.expand = !this.expand
-      EventBus.$emit('expandTask',row[this.mapFields['id']],this.expand)
+      this.setExpandRow({ pid: row[this.mapFields['id']], expand:  this.expand })
     },
   }
 }
