@@ -1,7 +1,7 @@
 <template>
  <div>
     <template v-for='item in filterTask'>
-      <bar :key= "item.id + scale + startGanttDate + endGanttDate" :startGanttDate='startGanttDate' :endGanttDate='endGanttDate' :row='item' :rowHeight='rowHeight'></bar>
+      <bar :key= "item.id + scale + startGanttDate + endGanttDate + componentKey" :startGanttDate='startGanttDate' :endGanttDate='endGanttDate' :row='item' :rowHeight='rowHeight'></bar>
     </template>
  </div>
 </template>
@@ -23,7 +23,8 @@ export default {
   },
   data () {
     return {
-      hiddenTask: []
+      hiddenTask: [],
+      componentKey: 0
     }
   },
   computed: {
@@ -82,6 +83,9 @@ export default {
   mounted () {
     this.$nextTick(() => {
     })
+  },
+  activated () {
+    this.componentKey++
   },
   methods: {
     setExpandRow: mutations.setExpandRow,

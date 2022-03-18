@@ -432,7 +432,7 @@ export default {
   },
   deactivated () {
     // 使用了 keep-alive 注销掉所有事件
-    EventBus.$off()
+    // EventBus.$off()
   },
   beforeDestory () {
     // 组件销毁前注销掉所有事件

@@ -14,7 +14,7 @@ export let store = Vue.observable({
   scrollFlag: true,
   mode: null,
   expandRow: {
-    pid : 0,
+    pid: 0,
     expand: true
   }
 })

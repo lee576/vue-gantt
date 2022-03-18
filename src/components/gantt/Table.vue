@@ -70,17 +70,19 @@ export default {
   methods: {
     // 滚动条坐标移动到今天
     scrollToToday () {
-      switch (this.mode) {
-        case '月':
-        case '日': {
-          this.$refs.tableBar.scrollLeft =
+      if (this.$refs.tableBar) {
+        switch (this.mode) {
+          case '月':
+          case '日': {
+            this.$refs.tableBar.scrollLeft =
           Number(this.$moment(this.$moment().format('YYYY-MM-DD')).diff(this.$moment(this.startGanttDate), 'days')) * Number(this.scale)
-          break
-        }
-        case '时': {
-          this.$refs.tableBar.scrollLeft =
+            break
+          }
+          case '时': {
+            this.$refs.tableBar.scrollLeft =
           Number(this.$moment(this.$moment().format('YYYY-MM-DD')).diff(this.$moment(this.startGanttDate), 'hours')) * Number(this.scale)
-          break
+            break
+          }
         }
       }
     }
