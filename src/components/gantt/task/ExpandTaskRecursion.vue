@@ -6,13 +6,13 @@
  </div>
 </template>
 <script>
-import { store } from '@/components/gantt/store.js'
-import { mutations } from '@/components/gantt/store.js'
+import { store, mutations } from '@/components/gantt/store.js'
+
 import ExpandTaskRow from './ExpandTaskRow.vue'
 export default {
   name: 'ExpandTaskRecursion',
-  components:{ExpandTaskRow},
-  props : {
+  components: {ExpandTaskRow},
+  props: {
     rowHeight: {
       type: Number,
       default: 0
@@ -21,52 +21,57 @@ export default {
       type: Array,
       default: () => []
     }
-  },  
-  data() {
-		return {
+  },
+  data () {
+    return {
       expand: true,
-      hiddenTask: [],
-    };
-	},
+      hiddenTask: []
+    }
+  },
   watch: {
-    expandRow : function (newVal) {
+    expandRow: function (newVal) {
       this.hiddenTask = []
-      for(let i = 0;i < this.tasks.length;i++) {
-        if(this.tasks[i][this.mapFields['parentId']] === newVal.pid && newVal.expand === false) {
-          this.hiddenTask.push(this.tasks[i])
-        }
-      }
-    },
+      this.recursionRow(newVal.pid)
+    }
   },
   computed: {
-    mapFields(){
+    mapFields () {
       return store.mapFields
     },
-    filterTask (){
+    filterTask () {
       let innerTask = []
-      for(let i = 0;i < store.tasks.length; i++)
-      {
-         if(!this.hiddenTask.some(obj => obj.id === store.tasks[i].id))
-         {
-            innerTask.push(store.tasks[i])
-         }
+      for (let i = 0; i < this.tasks.length; i++) {
+        if (!this.hiddenTask.some(obj => obj.id === this.tasks[i].id)) {
+          innerTask.push(this.tasks[i])
+        }
       }
       return innerTask
     },
-    expandRow : {
+    expandRow: {
       get: () => {
         return store.expandRow
       },
       set: (newValue) => {
         mutations.setExpandRow(newValue)
       }
-    },
+    }
   },
   methods: {
-    setExpandRow: mutations.setExpandRow,
-    checkShow(item) {
-      return  this.allTask.some(task => task[this.mapFields['parentId']] === item[this.mapFields['id']]) //item[this.mapFields['parentId']] === '0'
+    recursionRow (id) {
+      let findRows = this.tasks.filter(obj => obj[this.mapFields['parentId']] === id)
+      if (findRows && findRows.length > 0) {
+        for (let i = 0; i < findRows.length; i++) {
+          if (this.expandRow.expand === false) {
+            this.hiddenTask.push(findRows[i])
+          }
+          this.recursionRow(findRows[i][this.mapFields['id']])
+        }
+      }
     },
+    setExpandRow: mutations.setExpandRow,
+    checkShow (item) {
+      return this.allTask.some(task => task[this.mapFields['parentId']] === item[this.mapFields['id']]) // item[this.mapFields['parentId']] === '0'
+    }
   }
 }
 </script>

@@ -9,11 +9,10 @@
  </div>
 </template>
 <script>
-import { store } from '@/components/gantt/store.js'
-import { mutations } from '@/components/gantt/store.js'
-import { EventBus }  from '../EventBus.js'
+import { store, mutations } from '@/components/gantt/store.js'
+import { EventBus } from '../EventBus.js'
 export default {
-  props : {
+  props: {
     rowHeight: {
       type: Number,
       default: 0
@@ -22,42 +21,42 @@ export default {
       type: Object,
       default: () => {}
     }
-  },  
-  data() {
-		return {
+  },
+  data () {
+    return {
       expand: true,
       showRow: true
-    };
-	},
-  mounted() {
-    EventBus.$on('expandTask',(rowId, expand) => {
-       if(this.row[this.mapFields['parentId']] === rowId) {
-          this.showRow = expand
-          EventBus.$emit('expandTask',this.row[this.mapFields['id']],expand)
-       }
+    }
+  },
+  mounted () {
+    EventBus.$on('expandTask', (rowId, expand) => {
+      if (this.row[this.mapFields['parentId']] === rowId) {
+        this.showRow = expand
+        EventBus.$emit('expandTask', this.row[this.mapFields['id']], expand)
+      }
     })
-	},
+  },
   computed: {
-    mapFields(){
+    mapFields () {
       return store.mapFields
     },
-    allTask (){
+    allTask () {
       return store.tasks
     },
-    expandRow(){
+    expandRow () {
       return store.expandRow
-    },
+    }
   },
   methods: {
     setTasks: mutations.setTasks,
     setExpandRow: mutations.setExpandRow,
-    checkShow(item) {
+    checkShow (item) {
       return this.allTask.some(task => task[this.mapFields['parentId']] === item[this.mapFields['id']])
     },
-    expandClick(event, row) {
+    expandClick (event, row) {
       this.expand = !this.expand
-      this.setExpandRow({ pid: row[this.mapFields['id']], expand:  this.expand })
-    },
+      this.setExpandRow({ pid: row[this.mapFields['id']], expand: this.expand })
+    }
   }
 }
 </script>

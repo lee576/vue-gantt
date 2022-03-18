@@ -8,8 +8,8 @@
   </div>
 </template>
 <script>
-import { store } from '@/components/gantt/store.js'
-import { mutations } from '@/components/gantt/store.js'
+import { store, mutations } from '@/components/gantt/store.js'
+
 import TaskRow from './TaskRow.vue'
 export default {
   name: 'TaskRecursionRow',
@@ -28,11 +28,11 @@ export default {
       default: () => []
     }
   },
-  data() {
-		return {
-      hiddenTask: [],
-    };
-	},
+  data () {
+    return {
+      hiddenTask: []
+    }
+  },
   computed: {
     mapFields () {
       return store.mapFields
@@ -40,51 +40,54 @@ export default {
     timelineCellCount () {
       return store.timelineCellCount
     },
-    filterTask (){
+    filterTask () {
       let innerTask = []
-      for(let i = 0;i < store.tasks.length; i++)
-      {
-         if(!this.hiddenTask.some(obj => obj.id === store.tasks[i].id))
-         {
-            innerTask.push(store.tasks[i])
-         }
+      for (let i = 0; i < store.tasks.length; i++) {
+        if (!this.hiddenTask.some(obj => obj.id === store.tasks[i].id)) {
+          innerTask.push(store.tasks[i])
+        }
       }
       return innerTask
     },
-    expandRow : {
+    expandRow: {
       get: () => {
         return store.expandRow
       },
       set: (newValue) => {
         mutations.setExpandRow(newValue)
       }
-    },
+    }
   },
   watch: {
-    filterTask (){
+    filterTask () {
       let innerTask = []
-      for(let i = 0;i < store.tasks.length; i++)
-      {
-         if(!this.hiddenTask.some(obj => obj.id === store.tasks[i].id))
-         {
-            innerTask.push(store.tasks[i])
-         }
+      for (let i = 0; i < store.tasks.length; i++) {
+        if (!this.hiddenTask.some(obj => obj.id === store.tasks[i].id)) {
+          innerTask.push(store.tasks[i])
+        }
       }
       return innerTask
     },
-    expandRow : function (newVal) {
+    expandRow: function (newVal) {
       this.hiddenTask = []
-      for(let i = 0;i < this.tasks.length;i++) {
-        if(this.tasks[i][this.mapFields['parentId']] === newVal.pid && newVal.expand === false) {
-          this.hiddenTask.push(this.tasks[i])
-        }
-      }
-    },
+      this.recursionRow(newVal.pid)
+    }
   },
   mounted () {
   },
   methods: {
-     setExpandRow: mutations.setExpandRow,
+    setExpandRow: mutations.setExpandRow,
+    recursionRow (id) {
+      let findRows = this.tasks.filter(obj => obj[this.mapFields['parentId']] === id)
+      if (findRows && findRows.length > 0) {
+        for (let i = 0; i < findRows.length; i++) {
+          if (this.expandRow.expand === false) {
+            this.hiddenTask.push(findRows[i])
+          }
+          this.recursionRow(findRows[i][this.mapFields['id']])
+        }
+      }
+    }
   }
 }
 </script>
