@@ -378,7 +378,7 @@ export default {
           let recurrenceDates = recurrence.all('L').map(x => this.$moment(x).locale('zh-cn'))
           for (let recurrenceDate of recurrenceDates)
           { 
-              let caption = recurrenceDate.locale('zh-cn').format('DD日')
+              let caption = recurrenceDate.locale('zh-cn').format('MMMM DD日')
               let fulldate = recurrenceDate.locale('zh-cn').format('YYYY-MM-DD')
               this.dayHeaders.push({title: caption, width: this.scale, fulldate: fulldate})
           }
