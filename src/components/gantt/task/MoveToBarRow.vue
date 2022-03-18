@@ -32,12 +32,6 @@ export default {
     }
   },
   mounted () {
-    EventBus.$on('expandTask', (rowId, expand) => {
-      if (this.row[this.mapFields['parentId']] === rowId) {
-        this.showRow = expand
-        EventBus.$emit('expandTask', this.row[this.mapFields['id']], expand)
-      }
-    })
   },
   computed: {
     mapFields () {

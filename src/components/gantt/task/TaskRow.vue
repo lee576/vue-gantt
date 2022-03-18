@@ -55,12 +55,6 @@ export default {
     }
   },
   mounted () {
-    EventBus.$on('expandTask', (rowId, expand) => {
-      if (this.row[this.mapFields['parentId']] === rowId) {
-        this.showRow = expand
-        EventBus.$emit('expandTask', this.row[this.mapFields['id']], expand)
-      }
-    })
     // 响应 Task hover 事件
     EventBus.$on('taskHover', (rowId, hover) => {
       if (this.row[this.mapFields['id']] === rowId) {
