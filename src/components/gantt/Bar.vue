@@ -77,17 +77,6 @@ export default {
         }
       })
 
-      // 响应展开和折叠事件
-      EventBus.$on('expandTask', (rowId, expand) => {
-        if (this.row[this.mapFields['parentId']] === rowId) {
-          this.showRow = expand
-          this.$nextTick(() => {
-            if (this.$refs.bar) {
-              this.drowBar(this.$refs.bar)
-            }
-          })
-        }
-      })
       // 滚动条定位到 Bar 的开始位置
       EventBus.$on('moveToBarStart', (rowId) => {
         if (this.row[this.mapFields['id']] === rowId) {
