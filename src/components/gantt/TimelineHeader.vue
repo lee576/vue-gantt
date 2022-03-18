@@ -12,6 +12,12 @@
         </div>
       </template>
     </div>
+    <div v-if="weekHeaders && weekHeaders.length > 0" class="header">
+      <template v-for='(item, index) in weekHeaders'>
+        <div class="headerCaption" style="border-top:1px" :key="index" v-bind:style="{ width: item.width + 'px' }"><span v-bind:style="{ width: item.width + 'px' }">{{item.title}}</span>
+        </div>
+      </template>
+    </div>
     <div v-if="hourHeaders && hourHeaders.length > 0" class="header">
       <template v-for='(item, index) in hourHeaders'>
         <div class="headerCaption" :key="index" v-bind:style="{ width: item.width + 'px',marginTop: '-2px' }"><span v-bind:style="{ width: item.width + 'px' }">{{item.title}}</span></div>
@@ -22,6 +28,10 @@
 <script>
 export default {
   props: {
+    weekHeaders: {
+      type: Array,
+      default: () => []
+    },
     dayHeaders: {
       type: Array,
       default: () => []

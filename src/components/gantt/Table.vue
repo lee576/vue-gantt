@@ -2,7 +2,7 @@
   <div ref='tableBar' class="table">
     <div class="header" v-bind:style="{ height: headersHeight + 'px' }">
       <div style="width: 100%;border-top: 1px solid #cecece;margin:0px 0px -1px -1px;"></div>
-      <timeline-header :hourHeaders='hourHeaders' :dayHeaders='dayHeaders' :monthHeaders='monthHeaders'></timeline-header>
+      <timeline-header :weekHeaders='weekHeaders' :hourHeaders='hourHeaders' :dayHeaders='dayHeaders' :monthHeaders='monthHeaders'></timeline-header>
       <div style="width: 100%;border-top: 1px solid #cecece;margin:0px 0px -1px -1px;"></div>
     </div>
     <div class="content" v-bind:style="{ height: 'calc(100% - ' + headersHeight + 'px)' , width:'fit-content'}">
@@ -34,6 +34,9 @@ export default {
   computed: {
     dayHeaders () {
       return store.dayHeaders
+    },
+    weekHeaders () {
+      return store.weekHeaders
     },
     monthHeaders () {
       return store.monthHeaders

@@ -2,6 +2,7 @@ import Vue from 'vue'
 export let serialNumber = 0
 export let store = Vue.observable({
   monthHeaders: [],
+  weekHeaders: [],
   dayHeaders: [],
   hourHeaders: [],
   tasks: [],
@@ -34,6 +35,10 @@ export let mutations = {
   // 任务表头
   setTaskHeaders (taskHeaders) {
     store.taskHeaders = taskHeaders
+  },
+  // 星期表头
+  setWeekHeaders (weekHeaders) {
+    store.weekHeaders = weekHeaders
   },
   // 小时表头
   setHourHeaders (hourHeaders) {

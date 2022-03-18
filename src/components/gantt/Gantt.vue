@@ -118,6 +118,8 @@ export default {
       monthHeaders: [],
       // 日表头
       dayHeaders: [],
+      // 周表头
+      weekHeaders: [],
       // 小时表头
       hourHeaders: [],
       // 表头最小单位宽度
@@ -148,6 +150,10 @@ export default {
     // 日表头
     dayHeaders: function (newVal) {
       this.setDayHeaders(newVal)
+    },
+    // 星期表头
+    weekHeaders: function (newVal) {
+      this.setWeekHeaders(newVal)
     },
     // 小时表头
     hourHeaders: function (newVal) {
@@ -201,6 +207,7 @@ export default {
   },
   created () {
     this.setMonthHeaders(this.monthHeaders)
+    this.setWeekHeaders(this.weekHeaders)
     this.setDayHeaders(this.dayHeaders)
     this.setHourHeaders(this.hourHeaders)
     this.setTaskHeaders(this.dataConfig.taskHeaders)
@@ -211,6 +218,7 @@ export default {
   },
   mounted () {
     this.monthHeaders = []
+    this.weekHeaders = []
     this.dayHeaders = []
     this.hourHeaders = []
     this.timeMode('月')
@@ -276,6 +284,7 @@ export default {
       }
     },
     setDayHeaders: mutations.setDayHeaders,
+    setWeekHeaders: mutations.setWeekHeaders,
     setTaskHeaders: mutations.setTaskHeaders,
     setMonthHeaders: mutations.setMonthHeaders,
     setHourHeaders: mutations.setHourHeaders,
@@ -307,7 +316,7 @@ export default {
         }
       }
       this.mode = mode
-      this.$forceUpdate()
+      //this.$forceUpdate()
     },
     setTimeLineHeaders (newVal) {
       // 开始时间格式是否合法
@@ -319,6 +328,7 @@ export default {
       if (days < 0) { return }
       this.startGanttDate = this.selectedStartDate + ' 00:00:00'
       this.endGanttDate = this.selectedEndDate + ' 23:59:59'
+      this.weekHeaders = []
       this.dayHeaders = []
       this.monthHeaders = []
       this.hourHeaders = []
@@ -367,6 +377,8 @@ export default {
           { 
               let caption = recurrenceDate.locale('zh-cn').format('DD日')
               let fulldate = recurrenceDate.locale('zh-cn').format('YYYY-MM-DD')
+              let week = recurrenceDate.locale('zh-cn').format('dddd')
+              this.weekHeaders.push({title: week, width: this.scale, fulldate: fulldate})
               this.dayHeaders.push({title: caption, width: this.scale, fulldate: fulldate})
           }
           this.timelineCellCount = this.dayHeaders.length
@@ -380,6 +392,8 @@ export default {
           { 
               let caption = recurrenceDate.locale('zh-cn').format('MMMM DD日')
               let fulldate = recurrenceDate.locale('zh-cn').format('YYYY-MM-DD')
+              let week = recurrenceDate.locale('zh-cn').format('dddd')
+              this.weekHeaders.push({title: week, width: this.scale, fulldate: fulldate})
               this.dayHeaders.push({title: caption, width: this.scale, fulldate: fulldate})
           }
           this.timelineCellCount = this.dayHeaders.length
@@ -393,6 +407,8 @@ export default {
           { 
               let caption = recurrenceDate.locale('zh-cn').format('MMMM DD日')
               let fullDate = recurrenceDate.locale('zh-cn').format('YYYY-MM-DD')
+              let week = recurrenceDate.locale('zh-cn').format('dddd')
+              this.weekHeaders.push({title: week, width: 24 * this.scale, fulldate: fullDate})
               this.dayHeaders.push({title: caption, width: 24 * this.scale,fulldate: fullDate})
               for (let i = 0; i <= 23; i++) {
                 this.hourHeaders.push({title: i + '点', width: this.scale})
