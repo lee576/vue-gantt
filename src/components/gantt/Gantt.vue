@@ -362,10 +362,12 @@ export default {
           }
 
           recurrence = this.$moment().recur(this.selectedStartDate, this.selectedEndDate).every(1).days()
-          let captions = recurrence.all('L').map(x => this.$moment(x).locale('zh-cn').format('DD日'))
-          let fullDate = recurrence.all('L').map(x => this.$moment(x).format('YYYY-MM-DD'))
-          for (let caption of captions) {
-            this.dayHeaders.push({title: caption, width: this.scale, fulldate: fullDate[captions.indexOf(caption)]})
+          let recurrenceDates = recurrence.all('L').map(x => this.$moment(x).locale('zh-cn'))
+          for (let recurrenceDate of recurrenceDates)
+          { 
+              let caption = recurrenceDate.locale('zh-cn').format('DD日')
+              let fulldate = recurrenceDate.locale('zh-cn').format('YYYY-MM-DD')
+              this.dayHeaders.push({title: caption, width: this.scale, fulldate: fulldate})
           }
           this.timelineCellCount = this.dayHeaders.length
           break
@@ -373,10 +375,12 @@ export default {
         case '日': {
           this.scale = 80
           let recurrence = this.$moment().recur(this.selectedStartDate, this.selectedEndDate).every(1).days()
-          let captions = recurrence.all('L').map(x => this.$moment(x).locale('zh-cn').format('MMMM DD日'))
-          let fullDate = recurrence.all('L').map(x => this.$moment(x).format('YYYY-MM-DD'))
-          for (let caption of captions) {
-            this.dayHeaders.push({title: caption, width: this.scale, fulldate: fullDate[captions.indexOf(caption)]})
+          let recurrenceDates = recurrence.all('L').map(x => this.$moment(x).locale('zh-cn'))
+          for (let recurrenceDate of recurrenceDates)
+          { 
+              let caption = recurrenceDate.locale('zh-cn').format('DD日')
+              let fulldate = recurrenceDate.locale('zh-cn').format('YYYY-MM-DD')
+              this.dayHeaders.push({title: caption, width: this.scale, fulldate: fulldate})
           }
           this.timelineCellCount = this.dayHeaders.length
           break
@@ -384,13 +388,15 @@ export default {
         case '时': {
           this.scale = 30
           let recurrence = this.$moment().recur(this.selectedStartDate, this.selectedEndDate).every(1).days()
-          let captions = recurrence.all('L').map(x => this.$moment(x).locale('zh-cn').format('MMMM DD日'))
-          let fullDate = recurrence.all('L').map(x => this.$moment(x).format('YYYY-MM-DD'))
-          for (let caption of captions) {
-            this.dayHeaders.push({title: caption, width: 24 * this.scale,fulldate: fullDate[captions.indexOf(caption)]})
-            for (let i = 0; i <= 23; i++) {
-              this.hourHeaders.push({title: i + '点', width: this.scale})
-            }
+          let recurrenceDates = recurrence.all('L').map(x => this.$moment(x).locale('zh-cn'))
+          for (let recurrenceDate of recurrenceDates)
+          { 
+              let caption = recurrenceDate.locale('zh-cn').format('MMMM DD日')
+              let fullDate = recurrenceDate.locale('zh-cn').format('YYYY-MM-DD')
+              this.dayHeaders.push({title: caption, width: 24 * this.scale,fulldate: fullDate})
+              for (let i = 0; i <= 23; i++) {
+                this.hourHeaders.push({title: i + '点', width: this.scale})
+              }
           }
           this.timelineCellCount = this.hourHeaders.length
           break
