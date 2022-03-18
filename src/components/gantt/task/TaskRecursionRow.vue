@@ -43,7 +43,7 @@ export default {
     filterTask () {
       let innerTask = []
       for (let i = 0; i < store.tasks.length; i++) {
-        if (!this.hiddenTask.some(obj => obj.id === store.tasks[i].id)) {
+        if (!this.hiddenTask.some(obj => obj[this.mapFields['id']] === store.tasks[i][this.mapFields['id']])) {
           innerTask.push(store.tasks[i])
         }
       }
@@ -62,7 +62,7 @@ export default {
     filterTask () {
       let innerTask = []
       for (let i = 0; i < store.tasks.length; i++) {
-        if (!this.hiddenTask.some(obj => obj.id === store.tasks[i].id)) {
+        if (!this.hiddenTask.some(obj => obj[this.mapFields['id']] === store.tasks[i][this.mapFields['id']])) {
           innerTask.push(store.tasks[i])
         }
       }

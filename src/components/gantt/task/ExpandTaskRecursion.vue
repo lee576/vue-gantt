@@ -41,7 +41,7 @@ export default {
     filterTask () {
       let innerTask = []
       for (let i = 0; i < this.tasks.length; i++) {
-        if (!this.hiddenTask.some(obj => obj.id === this.tasks[i].id)) {
+        if (!this.hiddenTask.some(obj => obj[this.mapFields['id']] === this.tasks[i][this.mapFields['id']])) {
           innerTask.push(this.tasks[i])
         }
       }
