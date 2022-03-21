@@ -17,7 +17,13 @@ export let store = Vue.observable({
   expandRow: {
     pid: 0,
     expand: true
-  }
+  },
+  // 添加子任务
+  subTask: {},
+  // 编辑任务
+  editTask: {},
+  // 删除任务
+  removeTask: {}
 })
 export let mutations = {
   // 月度表头
@@ -75,5 +81,17 @@ export let mutations = {
   // 设置展开行
   setExpandRow (expandRow) {
     store.expandRow = expandRow
+  },
+  // 添加子任务
+  setSubTask (subTask) {
+    store.subTask = subTask
+  },
+  // 编辑任务
+  setEditTask (editTask) {
+    store.editTask = editTask
+  },
+  // 删除任务
+  setRemoveTask (removeTask) {
+    store.removeTask = removeTask
   }
 }

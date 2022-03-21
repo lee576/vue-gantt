@@ -27,7 +27,6 @@
         <div :class="buttonClass[1]" style="border-left:0;border-right:0" @click="timeMode('日')"><div class="text">日</div></div>
         <div :class="buttonClass[2]" style="border-radius:0 10px 10px 0;" @click="timeMode('时')"><div class="text">时</div></div>
       </div>
-      
     </div>
     <div class="gantt">
       <SplitPane direction="row" :min="10" :max="80" :triggerLength="10" :paneLengthPercent.sync="paneLengthPercent">
@@ -46,7 +45,7 @@ import DatePicker from './DatePicker.vue'
 import SplitPane from './SplitPane.vue'
 import GanttTable from './Table.vue'
 import TaskTable from './task/TaskTable.vue'
-import { mutations } from '@/components/gantt/store.js'
+import { store, mutations } from '@/components/gantt/store.js'
 import Vue from 'vue'
 import { EventBus } from './EventBus'
 export default {
@@ -134,6 +133,17 @@ export default {
     }
   },
   components: { GanttTable, TaskTable, SplitPane, DatePicker },
+  computed: {
+    subTask () {
+      return store.subTask
+    },
+    editTask () {
+      return store.editTask
+    },
+    removeTask () {
+      return store.removeTask
+    }
+  },
   watch: {
     // 时间表头最小单位宽度,所有表头的宽度都是他的倍数
     scale: function (newVal) {
@@ -203,6 +213,33 @@ export default {
     // 甘特图结束时间
     endGanttDate: function (newVal) {
       this.setEndGanttDate(newVal)
+    },
+    // 添加任务
+    subTask: function (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        if (newVal) { this.eventConfig.addSubTask(newVal) }
+      } else {
+        if (oldVal) { this.eventConfig.addSubTask(oldVal) }
+      }
+      this.setSubTask(null)
+    },
+    // 编辑任务
+    editTask: function (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        if (newVal) { this.eventConfig.editTask(newVal) }
+      } else {
+        if (oldVal) { this.eventConfig.editTask(oldVal) }
+      }
+      this.setEditTask(null)
+    },
+    // 删除任务
+    removeTask: function (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        if (newVal) { this.eventConfig.removeTask(newVal) }
+      } else {
+        if (oldVal) { this.eventConfig.removeTask(oldVal) }
+      }
+      this.setRemoveTask(null)
     }
   },
   created () {
@@ -230,24 +267,12 @@ export default {
       EventBus.$on('addRootTask', (row) => {
         this.eventConfig.addRootTask(row)
       })
-      // 添加子任务事件
-      EventBus.$on('addSubTask', (row) => {
-        this.eventConfig.addSubTask(row)
-      })
-      // 删除任务事件
-      EventBus.$on('removeTask', (row) => {
-        this.eventConfig.removeTask(row)
-      })
-      // 编辑任务事件
-      EventBus.$on('editTask', (row) => {
-        this.eventConfig.editTask(row)
-      })
       // 横向滚动条滚动到今天的位置
       EventBus.$emit('scrollToToday')
       // 设置Bar的颜色
       EventBus.$on('setBarColor', (row) => {
-        this.styleConfig.setBarColor(row,(color)=>{
-          EventBus.$emit('returnBarColor',row[this.dataConfig.mapFields['id']], color)
+        this.styleConfig.setBarColor(row, (color) => {
+          EventBus.$emit('returnBarColor', row[this.dataConfig.mapFields['id']], color)
         })
       })
     })
@@ -295,6 +320,9 @@ export default {
     setStartGanttDate: mutations.setStartGanttDate,
     setEndGanttDate: mutations.setEndGanttDate,
     setMode: mutations.setMode,
+    setSubTask: mutations.setSubTask,
+    setEditTask: mutations.setEditTask,
+    setRemoveTask: mutations.setRemoveTask,
     // 修改按钮样式
     timeMode (mode) {
       this.$refs.barContent.scrollLeft = 0
@@ -316,7 +344,7 @@ export default {
         }
       }
       this.mode = mode
-      //this.$forceUpdate()
+      // this.$forceUpdate()
     },
     setTimeLineHeaders (newVal) {
       // 开始时间格式是否合法
@@ -373,13 +401,12 @@ export default {
 
           recurrence = this.$moment().recur(this.selectedStartDate, this.selectedEndDate).every(1).days()
           let recurrenceDates = recurrence.all('L').map(x => this.$moment(x).locale('zh-cn'))
-          for (let recurrenceDate of recurrenceDates)
-          { 
-              let caption = recurrenceDate.locale('zh-cn').format('DD日')
-              let fulldate = recurrenceDate.locale('zh-cn').format('YYYY-MM-DD')
-              let week = recurrenceDate.locale('zh-cn').format('dddd')
-              this.weekHeaders.push({title: week, width: this.scale, fulldate: fulldate})
-              this.dayHeaders.push({title: caption, width: this.scale, fulldate: fulldate})
+          for (let recurrenceDate of recurrenceDates) {
+            let caption = recurrenceDate.locale('zh-cn').format('DD日')
+            let fulldate = recurrenceDate.locale('zh-cn').format('YYYY-MM-DD')
+            let week = recurrenceDate.locale('zh-cn').format('dddd')
+            this.weekHeaders.push({title: week, width: this.scale, fulldate: fulldate})
+            this.dayHeaders.push({title: caption, width: this.scale, fulldate: fulldate})
           }
           this.timelineCellCount = this.dayHeaders.length
           break
@@ -388,13 +415,12 @@ export default {
           this.scale = 80
           let recurrence = this.$moment().recur(this.selectedStartDate, this.selectedEndDate).every(1).days()
           let recurrenceDates = recurrence.all('L').map(x => this.$moment(x).locale('zh-cn'))
-          for (let recurrenceDate of recurrenceDates)
-          { 
-              let caption = recurrenceDate.locale('zh-cn').format('MMMM DD日')
-              let fulldate = recurrenceDate.locale('zh-cn').format('YYYY-MM-DD')
-              let week = recurrenceDate.locale('zh-cn').format('dddd')
-              this.weekHeaders.push({title: week, width: this.scale, fulldate: fulldate})
-              this.dayHeaders.push({title: caption, width: this.scale, fulldate: fulldate})
+          for (let recurrenceDate of recurrenceDates) {
+            let caption = recurrenceDate.locale('zh-cn').format('MMMM DD日')
+            let fulldate = recurrenceDate.locale('zh-cn').format('YYYY-MM-DD')
+            let week = recurrenceDate.locale('zh-cn').format('dddd')
+            this.weekHeaders.push({title: week, width: this.scale, fulldate: fulldate})
+            this.dayHeaders.push({title: caption, width: this.scale, fulldate: fulldate})
           }
           this.timelineCellCount = this.dayHeaders.length
           break
@@ -403,16 +429,15 @@ export default {
           this.scale = 30
           let recurrence = this.$moment().recur(this.selectedStartDate, this.selectedEndDate).every(1).days()
           let recurrenceDates = recurrence.all('L').map(x => this.$moment(x).locale('zh-cn'))
-          for (let recurrenceDate of recurrenceDates)
-          { 
-              let caption = recurrenceDate.locale('zh-cn').format('MMMM DD日')
-              let fullDate = recurrenceDate.locale('zh-cn').format('YYYY-MM-DD')
-              let week = recurrenceDate.locale('zh-cn').format('dddd')
-              this.weekHeaders.push({title: week, width: 24 * this.scale, fulldate: fullDate})
-              this.dayHeaders.push({title: caption, width: 24 * this.scale,fulldate: fullDate})
-              for (let i = 0; i <= 23; i++) {
-                this.hourHeaders.push({title: i + '点', width: this.scale})
-              }
+          for (let recurrenceDate of recurrenceDates) {
+            let caption = recurrenceDate.locale('zh-cn').format('MMMM DD日')
+            let fullDate = recurrenceDate.locale('zh-cn').format('YYYY-MM-DD')
+            let week = recurrenceDate.locale('zh-cn').format('dddd')
+            this.weekHeaders.push({title: week, width: 24 * this.scale, fulldate: fullDate})
+            this.dayHeaders.push({title: caption, width: 24 * this.scale, fulldate: fullDate})
+            for (let i = 0; i <= 23; i++) {
+              this.hourHeaders.push({title: i + '点', width: this.scale})
+            }
           }
           this.timelineCellCount = this.hourHeaders.length
           break

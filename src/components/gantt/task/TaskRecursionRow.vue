@@ -9,7 +9,6 @@
 </template>
 <script>
 import { store, mutations } from '@/components/gantt/store.js'
-
 import TaskRow from './TaskRow.vue'
 export default {
   name: 'TaskRecursionRow',

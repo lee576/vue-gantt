@@ -7,7 +7,6 @@
 </template>
 <script>
 import { store, mutations } from '@/components/gantt/store.js'
-
 import ExpandTaskRow from './ExpandTaskRow.vue'
 export default {
   name: 'ExpandTaskRecursion',

@@ -7,7 +7,6 @@
 </template>
 <script>
 import { store, mutations } from '@/components/gantt/store.js'
-
 import Bar from '../gantt/Bar.vue'
 export default {
   name: 'BarRecursionRow',
