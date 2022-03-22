@@ -25,7 +25,13 @@ export let store = Vue.observable({
   // 编辑任务
   editTask: {},
   // 删除任务
-  removeTask: {}
+  removeTask: {},
+  // bar 的时间改变
+  barDate: {
+    id: '',
+    startDate: '',
+    endDate: ''
+  }
 })
 export let mutations = {
   // 月度表头
@@ -99,5 +105,9 @@ export let mutations = {
   // 删除任务
   setRemoveTask (removeTask) {
     store.removeTask = removeTask
+  },
+  // bar 的时间改变
+  setBarDate (barDate) {
+    store.barDate = barDate
   }
 }

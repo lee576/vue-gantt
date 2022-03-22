@@ -14,7 +14,7 @@
 import Snap from 'snapsvg-cjs'
 import interact from 'interactjs'
 import { EventBus } from './EventBus.js'
-import { store } from '@/components/gantt/store.js'
+import { store, mutations } from '@/components/gantt/store.js'
 export default {
   name: 'Bar',
   props: {
@@ -61,10 +61,10 @@ export default {
     }
   },
   created () {
-    //设置Bar的颜色 侦听事件接收配置返回的方法
+    // 设置Bar的颜色 侦听事件接收配置返回的方法
     EventBus.$on('returnBarColor', (rowId, color) => {
       if (this.row[this.mapFields['id']] === rowId) {
-          this.barColor = color       
+        this.barColor = color
       }
     })
   },
@@ -87,9 +87,9 @@ export default {
           })
         }
       })
-      
-      //设置Bar的颜色 传递事件调用配置的方法
-      EventBus.$emit('setBarColor',this.row)
+
+      // 设置Bar的颜色 传递事件调用配置的方法
+      EventBus.$emit('setBarColor', this.row)
 
       if (this.$refs.bar) {
         this.drowBar(this.$refs.bar)
@@ -109,6 +109,7 @@ export default {
     })
   },
   methods: {
+    setBarDate: mutations.setBarDate,
     isChildOf (child, parent) {
       if (child && parent) {
         let parentNode = child.parentNode
@@ -255,6 +256,11 @@ export default {
                 break
               }
             }
+            this.setBarDate({
+              id: this.row[this.mapFields.id],
+              startDate: this.row[this.mapFields.startdate],
+              endDate: this.row[this.mapFields.enddate]
+            })
           }
         }
       })
@@ -372,6 +378,11 @@ export default {
                 break
               }
             }
+            this.setBarDate({
+              id: this.row[this.mapFields.id],
+              startDate: this.row[this.mapFields.startdate],
+              endDate: this.row[this.mapFields.enddate]
+            })
           }
         },
         modifiers: [

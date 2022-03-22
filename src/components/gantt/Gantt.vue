@@ -92,7 +92,8 @@ export default {
         return typeof value.addRootTask === 'function' &&
                typeof value.addSubTask === 'function' &&
                typeof value.removeTask === 'function' &&
-               typeof value.queryTask === 'function'
+               typeof value.queryTask === 'function' &&
+               typeof value.barDate === 'function'
       }
     }
   },
@@ -146,9 +147,19 @@ export default {
     },
     rootTask () {
       return store.rootTask
+    },
+    barDate () {
+      return store.barDate
     }
   },
   watch: {
+    barDate: {
+      handler (newVal, oldVal) {
+        if (newVal.id && (newVal.startDate !== oldVal.startDate || newVal.endDate !== oldVal.endDate)) {
+          this.eventConfig.barDate(newVal.id, newVal.startDate, newVal.endDate)
+        }
+      }
+    },
     // 时间表头最小单位宽度,所有表头的宽度都是他的倍数
     scale: function (newVal) {
       this.setScale(newVal)
@@ -336,6 +347,7 @@ export default {
     setSubTask: mutations.setSubTask,
     setEditTask: mutations.setEditTask,
     setRemoveTask: mutations.setRemoveTask,
+    setBarDate: mutations.setBarDate,
     // 修改按钮样式
     timeMode (mode) {
       this.$refs.barContent.scrollLeft = 0
@@ -457,7 +469,7 @@ export default {
         }
       }
       // 选定日期后重新查询
-      this.eventConfig.queryTask(this.startGanttDate, this.endGanttDate)
+      this.eventConfig.queryTask(this.selectedStartDate, this.selectedEndDate)
     },
     openEndDatePicker () {
       this.showEndDatePicker = true
