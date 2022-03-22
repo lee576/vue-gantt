@@ -91,7 +91,8 @@ export default {
       validator: (value) => {
         return typeof value.addRootTask === 'function' &&
                typeof value.addSubTask === 'function' &&
-               typeof value.removeTask === 'function'
+               typeof value.removeTask === 'function' &&
+               typeof value.queryTask === 'function'
       }
     }
   },
