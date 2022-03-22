@@ -443,6 +443,8 @@ export default {
           break
         }
       }
+      // 选定日期后重新查询
+      this.eventConfig.queryTask(this.startGanttDate, this.endGanttDate)
     },
     openEndDatePicker () {
       this.showEndDatePicker = true
