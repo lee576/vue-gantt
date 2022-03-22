@@ -110,24 +110,36 @@ export default {
       },
       // 事件配置
       eventConfig: {
+        // 加父任务事件
         addRootTask: this.addRootTask,
+        // 加子任务事件
         addSubTask: this.addSubTask,
+        // 删除任务事件
         removeTask: this.removeTask,
-        editTask: this.editTask
+        // 编辑任务事件
+        editTask: this.editTask,
+        // 查询任务事件
+        queryTask: this.queryTask
       }
     }
   },
   watch: {},
   created () {},
   mounted () {
+    // 查询开始时间
     this.dataConfig.queryStartDate = this.$moment().startOf('month').format('YYYY-MM-DD')
+    // 查询结束时间
     this.dataConfig.queryEndDate = this.$moment().endOf('month').format('YYYY-MM-DD')
   },
   computed: {
   },
   methods: {
+    queryTask (queryStart, queryEnd) {
+      console.log(queryStart)
+      console.log(queryEnd)
+    },
     addRootTask () {
-      
+
     },
     addSubTask (row) {
       console.log(row)
@@ -138,20 +150,19 @@ export default {
     editTask (row) {
       console.log(row)
     },
-    setBarColor(row, callback) {
-      if(row.level === '紧急')
+    setBarColor (row, callback) {
+      if (row.level === '紧急')
          callback('red')
-      else if(row.level === '重要')
+      else if (row.level === '重要')
          callback('blue')
-      else if(row.level === '一般')
+      else if (row.level === '一般')
          callback('gray')
-      else if(row.level === '不重要')
+      else if (row.level === '不重要')
          callback('yellow')
       else
          callback('black')
     }
   }
-}
 </script>
 <style>
 #app {
