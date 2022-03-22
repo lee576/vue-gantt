@@ -18,6 +18,8 @@ export let store = Vue.observable({
     pid: 0,
     expand: true
   },
+  // 添加根任务
+  rootTask: {},
   // 添加子任务
   subTask: {},
   // 编辑任务
@@ -81,6 +83,10 @@ export let mutations = {
   // 设置展开行
   setExpandRow (expandRow) {
     store.expandRow = expandRow
+  },
+  // 添加根任务
+  setRootTask (rootTask) {
+    store.rootTask = rootTask
   },
   // 添加子任务
   setSubTask (subTask) {

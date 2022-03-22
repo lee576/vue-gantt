@@ -143,6 +143,9 @@ export default {
     },
     removeTask () {
       return store.removeTask
+    },
+    rootTask () {
+      return store.rootTask
     }
   },
   watch: {
@@ -214,6 +217,14 @@ export default {
     // 甘特图结束时间
     endGanttDate: function (newVal) {
       this.setEndGanttDate(newVal)
+    },
+    rootTask: function (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        if (newVal) { this.eventConfig.addRootTask() }
+      } else {
+        if (oldVal) { this.eventConfig.addRootTask() }
+      }
+      this.setRootTask(null)
     },
     // 添加任务
     subTask: function (newVal, oldVal) {
@@ -321,6 +332,7 @@ export default {
     setStartGanttDate: mutations.setStartGanttDate,
     setEndGanttDate: mutations.setEndGanttDate,
     setMode: mutations.setMode,
+    setRootTask: mutations.setRootTask,
     setSubTask: mutations.setSubTask,
     setEditTask: mutations.setEditTask,
     setRemoveTask: mutations.setRemoveTask,
