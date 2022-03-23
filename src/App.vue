@@ -32,6 +32,7 @@ export default {
           level: '重要',
           start_date: '2022-03-04 05:00:00',
           end_date: '2022-03-05 00:00:00',
+          job_progress: '0.3',
           spend_time: null
         },
         {
@@ -41,6 +42,7 @@ export default {
           level: '紧急',
           start_date: '2022-03-05 05:00:00',
           end_date: '2022-03-09 00:00:00',
+          job_progress: '0.4',
           spend_time: null
         },
         {
@@ -50,6 +52,7 @@ export default {
           level: '一般',
           start_date: '2022-03-07 00:00:00',
           end_date: '2022-03-11 22:00:00',
+          job_progress: '0.6',
           spend_time: null
         },
         {
@@ -59,6 +62,7 @@ export default {
           level: '不重要',
           start_date: '2022-03-08 00:00:00',
           end_date: '2022-03-14 22:00:00',
+          job_progress: '0.7',
           spend_time: null
         },
         {
@@ -68,6 +72,7 @@ export default {
           level: '一般',
           start_date: '2022-03-05 00:00:00',
           end_date: '2022-03-13 22:00:00',
+          job_progress: '0.9',
           spend_time: null
         },
         {
@@ -77,6 +82,7 @@ export default {
           level: '一般',
           start_date: '2022-03-03 00:00:00',
           end_date: '2022-03-07 22:00:00',
+          job_progress: '0.65',
           spend_time: null
         }],
         // 字段映射
@@ -94,7 +100,9 @@ export default {
           // 工作结束时间
           enddate: 'end_date',
           // 耗时
-          takestime: 'spend_time'
+          takestime: 'spend_time',
+          // 进度
+          progress: 'job_progress'
         },
         // 任务表头配置 标题/宽度/字段名称/是否显示
         taskHeaders: [
@@ -110,9 +118,9 @@ export default {
       },
       // 事件配置
       eventConfig: {
-        // 加父任务事件
+        // 添加父任务事件
         addRootTask: this.addRootTask,
-        // 加子任务事件
+        // 添加子任务事件
         addSubTask: this.addSubTask,
         // 删除任务事件
         removeTask: this.removeTask,
@@ -125,6 +133,8 @@ export default {
       }
     }
   },
+  watch: {},
+  created () {},
   mounted () {
     // 查询开始时间
     this.dataConfig.queryStartDate = this.$moment().startOf('month').format('YYYY-MM-DD')
@@ -164,20 +174,23 @@ export default {
     // 设置Bar的颜色
     setBarColor (row, callback) {
       if (row.level === '紧急') {
+        // eslint-disable-next-line standard/no-callback-literal
         callback('red')
-      } else if (row.level === '重要') { 
-        callback('blue') 
-      } else if (row.level === '一般') { 
-        callback('gray') 
-      } else if (row.level === '不重要') { 
-        callback('yellow') 
-      } else { 
-        callback('black') 
+      } else if (row.level === '重要') {
+        // eslint-disable-next-line standard/no-callback-literal
+        callback('blue')
+      } else if (row.level === '一般') {
+        // eslint-disable-next-line standard/no-callback-literal
+        callback('gray')
+      } else if (row.level === '不重要') {
+        // eslint-disable-next-line standard/no-callback-literal
+        callback('yellow')
+      } else {
+        // eslint-disable-next-line standard/no-callback-literal
+        callback('black')
       }
     }
-  },
-  watch: {},
-  created () {}
+  }
 }
 </script>
 <style>
