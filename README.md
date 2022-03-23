@@ -1,1 +1,3 @@
-![动画](https://user-images.githubusercontent.com/42806849/157661365-e43eff09-035e-4779-9c8c-a43fea80c0dc.gif)
+
+![动画](https://user-images.githubusercontent.com/42806849/159714863-f0e4d026-d349-4ee3-a34e-c0931ec35b1d.gif)
+使用示例看 App.vue
