@@ -8,7 +8,8 @@
             minWidth: scale + 'px', 
             maxWidth: scale + 'px',
             height: rowHeight + 'px',
-            background: WeekEndColor(count)
+            background: WeekEndColor(count),
+            opacity: 0.4
             }"></div>
         </template>
       </div>
