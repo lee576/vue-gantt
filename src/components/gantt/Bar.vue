@@ -168,12 +168,19 @@ export default {
       }).pattern(0, 0, 10, 10)
 
       let g = svg.g()
-      let innerRect = svg.rect(0, 0, this.oldBarWidth / 2, this.barHeight, 10)
+      let innerRectWidth = 0
+      if (this.row[this.mapFields.progress]) {
+        innerRectWidth = Number(this.oldBarWidth) * Number(this.row[this.mapFields.progress])
+      } else {
+        innerRectWidth = Number(this.oldBarWidth)
+      }
+
+      let innerRect = svg.rect(0, 0, innerRectWidth, this.barHeight, 10)
       innerRect.attr({class: 'innerRect'})
 
       // 半透明
       innerRect.attr({fill: this.barColor, fillOpacity: '.4'})
-      innerRect.attr({width: this.oldBarWidth / 2})
+      innerRect.attr({width: innerRectWidth})
       g.add(innerRect)
       let outerRect = svg.rect(0, 0, this.oldBarWidth, this.barHeight, 10).attr({fill: p, stroke: '#cecece', strokeWidth: '1px'})
       outerRect.hover(function () {
@@ -309,11 +316,18 @@ export default {
               strokeWidth: 5
             }).pattern(0, 0, 10, 10)
 
+            let innerRectWidth = 0
+            if (this.row[this.mapFields.progress]) {
+              innerRectWidth = Number(event.rect.width) * Number(this.row[this.mapFields.progress])
+            } else {
+              innerRectWidth = Number(event.rect.width)
+            }
+
             let g = svg.g()
             innerRect.attr({class: 'innerRect'})
             // 半透明
             innerRect.attr({fill: this.barColor, fillOpacity: '.4'})
-            innerRect.attr({width: event.rect.width / 2})
+            innerRect.attr({width: innerRectWidth})
             g.add(innerRect)
             let outerRect = svg.rect(0, 0, event.rect.width, this.barHeight, 10).attr({fill: p, stroke: '#cecece', strokeWidth: '1px'})
             outerRect.hover(function () {
