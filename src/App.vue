@@ -174,19 +174,19 @@ export default {
     // 设置Bar的颜色
     setBarColor (row, callback) {
       if (row.level === '紧急') {
-        // eslint-disable-next-line standard/no-callback-literal
+        // 
         callback('red')
       } else if (row.level === '重要') {
-        // eslint-disable-next-line standard/no-callback-literal
+        // 
         callback('blue')
       } else if (row.level === '一般') {
-        // eslint-disable-next-line standard/no-callback-literal
+        // 
         callback('gray')
       } else if (row.level === '不重要') {
-        // eslint-disable-next-line standard/no-callback-literal
+        // 
         callback('yellow')
       } else {
-        // eslint-disable-next-line standard/no-callback-literal
+        // 
         callback('black')
       }
     }
