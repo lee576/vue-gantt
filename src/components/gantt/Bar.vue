@@ -4,7 +4,12 @@
       <div class="barRow" v-bind:style="{ height: rowHeight + 'px'}">
         <svg key="row.no" v-if='showRow' ref='bar' class="bar" :height="barHeight + 'px'" :class="{ active: hover }"></svg>
         <template v-for='(count) in timelineCellCount'>
-          <div class="cell" :key= "count + row.id + timelineCellCount + showRow + '_cell'" v-bind:style="{ minWidth: scale + 'px', maxWidth: scale + 'px',height: rowHeight + 'px' }"></div>
+          <div class="cell" :key= "count + row.id + timelineCellCount + showRow + '_cell'" v-bind:style="{ 
+            minWidth: scale + 'px', 
+            maxWidth: scale + 'px',
+            height: rowHeight + 'px',
+            background: WeekEndColor(count)
+            }"></div>
         </template>
       </div>
     <div style="border-top: 0px solid #cecece;margin:0px 0px 1px -1px;"></div>
@@ -432,6 +437,20 @@ export default {
     hoverInactive () {
       this.hover = false
       EventBus.$emit('taskHover', this.row[this.mapFields['id']], this.hover)
+    },
+    WeekEndColor(count) {
+      switch (this.mode) {
+        case '月':
+        case '日':
+           {
+             let currentDate = this.$moment(this.startGanttDate).add(Number(count), 'days'); 
+             if(this.$moment(currentDate).isoWeekday() === 7 || this.$moment(currentDate).isoWeekday() === 1) 
+             {
+               return '#F3F4F5'
+             }
+             break
+           }
+      }
     }
   },
   deactivated () {
