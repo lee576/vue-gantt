@@ -36,12 +36,12 @@ function mousEnter(el,binding) {
 		
 		span.style.top = bottom + 2 + 'px'
 		span.style.left = x + 'px'
-		span.style.display  = 'block'
+		span.style.visibility = 'visible'
 		span.style.opacity = '1'
 	}
 	
 	function viewLeve() {
-		span.style.display  = 'none'
+		span.style.visibility = 'hidden'
 		span.style.opacity = '0'
 	}
 }
