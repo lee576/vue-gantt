@@ -9,7 +9,7 @@
                              height: rowHeight + 'px',
                              paddingLeft: '40px'
                            }">{{row.no}}
-          <div class="toolbar" v-bind:style="{ height: rowHeight + 'px' }">
+          <div v-tip='tips' class="toolbar" v-bind:style="{ height: rowHeight + 'px' }">
             <svg @click="setSubTask(row)" class="btn" t="1646898128772" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6933">
               <path class="btn" fill="gray" d="M511.256 0C228.9 0 0 228.9 0 511.256 0 623.8 36.805 727.509 98.429 811.957l38.415-39.993c-51.592-73.945-82.067-163.708-82.067-260.709 0-252.105 204.374-456.479 456.479-456.479 252.089 0 456.466 204.374 456.466 456.479 0 252.101-204.376 456.466-456.466 456.466-96.102 0-185.157-29.847-258.709-80.565l-34.387 42.609c83.032 58.26 183.962 92.734 293.096 92.734 282.351 0 511.245-228.894 511.245-511.244C1022.5 228.9 793.606 0 511.256 0z" p-id="6934"></path>
               <path class="btn" fill="gray" d="M492.979 255.62 492.979 492.986 255.613 492.986 255.613 547.762 492.979 547.762 492.979 785.128 547.756 785.128 547.756 547.762 785.121 547.762 785.121 492.986 547.756 492.986 547.756 255.62Z" p-id="6935"></path>
@@ -28,7 +28,11 @@
 <script>
 import { store, mutations } from '@/components/gantt/store.js'
 import { EventBus } from '../EventBus.js'
+import tip from '../tip'
 export default {
+  directives: {
+    tip
+  },
   props: {
     headers: {
       type: Array,
@@ -46,7 +50,8 @@ export default {
   data () {
     return {
       showRow: true,
-      hover: false
+      hover: false,
+      tips:'aaaaa'
     }
   },
   computed: {
