@@ -145,4 +145,8 @@ export default {
       margin:0px 0px 0px 1px;
     }
   }
+.balloon{position: absolute;background-color: #FFF;border: 1px solid #a4acb5;padding: 5px 10px;border-radius: 4px;z-index: 100;}
+.balloon_top{width: 13px;height: 7px;position: absolute;background: url("~@/components/gantt/images/balloon_up.gif") no-repeat;top: -7px;}
+.balloon_meg{padding-left: 25px;background: url("~@/components/gantt/images/balloon_warning.gif") no-repeat;line-height: 20px;overflow: hidden;}
+.balloon_txt{font-size:12px;}
 </style>
