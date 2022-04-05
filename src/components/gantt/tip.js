@@ -46,7 +46,7 @@ balloon.prototype = {
 		balloon_meg.className = "balloon_meg";
 		var balloon_txt = document.createElement("div");
 		balloon_txt.className = "balloon_txt";
-		var megs=document.createTextNode(this.message);
+		var megs = document.createTextNode(this.message);
 		
 		balloon.appendChild(balloon_top);
 		balloon.appendChild(balloon_meg);
@@ -56,14 +56,16 @@ balloon.prototype = {
 		balloon.element = this.element;
 		
 		document.getElementsByTagName("body")[0].appendChild(balloon);
+		//document.getElementById("app").appendChild(balloon);
 		
 		var node_view = document.getElementView(this.element);
 		var node_top = document.getElementTop(this.element);
 		var node_left = document.getElementLeft(this.element);
 		
 		// 设置气泡位置
+		balloon.style.position = 'absolute'
 		balloon.style.top = (node_top + node_view.height + this.top) + "px";
-		balloon.style.left = (node_left + this.left) + "px";
+		balloon.style.left = (node_left) + "px";
 		
 		var mball = this;
 		// 设置滚动到焦点
@@ -155,8 +157,8 @@ document.getElementView = function (element)
 {
 	if(element != document)
 		return {
-			width: element.offsetWidth,
-			height: element.offsetHeight
+			width: element.getBoundingClientRect().width,
+			height: element.getBoundingClientRect().height
 		}
 	if (document.compatMode == "BackCompat"){
 		return {
@@ -173,9 +175,9 @@ document.getElementView = function (element)
 
 document.getElementLeft = function (element)
 {
-	var actualLeft = element.offsetLeft;
-	var current = element.offsetParent;
-	while (current !== null){
+	var actualLeft = element.getBoundingClientRect().left;
+	var current = element.parentNode;
+	while (current !== null && current && !isNaN(current.offsetLeft)){
 		actualLeft += current.offsetLeft;
 		current = current.offsetParent;
 	}
@@ -184,13 +186,14 @@ document.getElementLeft = function (element)
 
 document.getElementTop = function (element)
 {
-	var actualTop = element.offsetTop;
-	var current = element.offsetParent;
-	while (current !== null){
-		actualTop += current.offsetTop;
-		current = current.offsetParent;
-	}
-	return actualTop;
+	// var actualTop = element.getBoundingClientRect().top;
+	// var current = element.parentNode;
+	// while (current !== null && current && !isNaN(current.offsetTop)){
+	// 	actualTop += current.offsetTop;
+	// 	current = current.parentNode;
+	// }
+	// return actualTop;
+	return element.getBoundingClientRect().top
 };
 
 document.getScrollXY = function() 
@@ -232,12 +235,12 @@ function mousEnter(el,binding) {
 	// 划入
 	el.addEventListener('mouseenter',viewEnter,false)
 	// 离开
-	el.addEventListener('mouseout',viewLeve,false)
+	//el.addEventListener('mouseout',viewLeve,false)
 	let ball = new balloon(el, 1, binding.value, 50, 10, 5000, true);
 	function viewEnter() {
 		ball.Show();
 	}
-	function viewLeve() {
-		if(ball instanceof balloon) ball.Remove();
-	}
+	// function viewLeve() {
+	// 	if(ball instanceof balloon) ball.Remove();
+	// }
 }

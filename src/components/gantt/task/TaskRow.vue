@@ -51,7 +51,7 @@ export default {
     return {
       showRow: true,
       hover: false,
-      tips:'aaaaa'
+      tips:'aaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
     }
   },
   computed: {
@@ -128,6 +128,7 @@ export default {
         .btn {
           width: 15px;
           height: 15px;
+          position: relative;
           :hover{
             filter: drop-shadow(0px 0px 0px #2B76B3);
           }
