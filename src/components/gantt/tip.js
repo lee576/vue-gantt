@@ -236,7 +236,7 @@ function mousEnter(el,binding) {
 	el.addEventListener('mouseenter',viewEnter,false)
 	// 离开
 	//el.addEventListener('mouseout',viewLeve,false)
-	let ball = new balloon(el, 1, binding.value, 50, 10, 5000, true);
+	let ball = new balloon(el, 1, binding.value, 50, 10, 5000000000, true);
 	function viewEnter() {
 		ball.Show();
 	}
