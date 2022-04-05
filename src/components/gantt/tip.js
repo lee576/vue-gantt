@@ -24,8 +24,8 @@ balloon.prototype = {
 	Show : function(bRemove)
 	{
 		if(!this.element) return false;
-		if(this.element.ball)
-			this.element.ball.Remove(true);
+		// if(this.element.ball)
+		// 	this.element.ball.Remove(true);
 		
 		var balloon = document.getElementById("balloon_" + this.id)
 		if(bRemove != undefined && !bRemove && balloon) return false;
@@ -63,7 +63,6 @@ balloon.prototype = {
 		var node_left = document.getElementLeft(this.element);
 		
 		// 设置气泡位置
-		balloon.style.position = 'absolute'
 		balloon.style.top = (node_top + node_view.height + this.top) + "px";
 		balloon.style.left = (node_left) + "px";
 		
@@ -175,13 +174,13 @@ document.getElementView = function (element)
 
 document.getElementLeft = function (element)
 {
-	var actualLeft = element.getBoundingClientRect().left;
-	var current = element.parentNode;
-	while (current !== null && current && !isNaN(current.offsetLeft)){
-		actualLeft += current.offsetLeft;
-		current = current.offsetParent;
-	}
-	return actualLeft;
+	// var actualLeft = element.getBoundingClientRect().left;
+	// var current = element.parentNode;
+	// while (current !== null && current && !isNaN(current.offsetLeft)){
+	// 	actualLeft += current.offsetLeft;
+	// 	current = current.offsetParent;
+	// }
+	return element.getBoundingClientRect().left;
 };
 
 document.getElementTop = function (element)
@@ -235,12 +234,12 @@ function mousEnter(el,binding) {
 	// 划入
 	el.addEventListener('mouseenter',viewEnter,false)
 	// 离开
-	//el.addEventListener('mouseout',viewLeve,false)
-	let ball = new balloon(el, 1, binding.value, 50, 10, 5000000000, true);
+	// el.addEventListener('mouseout',viewLeve,false)
+	let ball = new balloon(el, 1, binding.value, 50, 10, 5000, true);
 	function viewEnter() {
 		ball.Show();
 	}
 	// function viewLeve() {
-	// 	if(ball instanceof balloon) ball.Remove();
+	// 	if(ball instanceof balloon) setTimeout(ball.Remove(), 5000) ;
 	// }
 }
