@@ -53,6 +53,12 @@ export default {
       set: (newValue) => {
         mutations.setRootTask(newValue)
       }
+    },
+    startGanttDate () {
+      return store.startGanttDate
+    },
+    endGanttDate () {
+      return store.endGanttDate
     }
   },
   created () {},
@@ -61,7 +67,11 @@ export default {
   methods: {
     setRootTask: mutations.setRootTask,
     scrollToToday () {
-      EventBus.$emit('scrollToToday')
+      // 判断今天在选择的时间范围内
+      let isBetween = this.$moment().isBetween(this.startGanttDate, this.endGanttDate)
+      if(isBetween) {
+        EventBus.$emit('scrollToToday')
+      }
     }
   }
 }
