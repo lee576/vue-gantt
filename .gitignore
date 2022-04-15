@@ -1,4 +1,6 @@
-
+node_modules/
+*.zip
+demo.html
 .vscode/launch.json
 node_modules/.cache/babel-loader/0cc745ec8adc06c58b5b447b5f1daab5.json
 node_modules/.cache/babel-loader/154677f17d8c06dd721255241d11af94.json
