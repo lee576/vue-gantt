@@ -1,3 +1,5 @@
+进度条是用SVG画的，使用了几个工具库 （interactjs 用来处理拖拽和修改尺寸，snap.svg 用来处理 svg 的dom 操作，moment.js用来处理时间的操作），其他没有依赖任何的UI组件
+
 单击动画可全屏观看
 
 ![动画](https://user-images.githubusercontent.com/42806849/159714863-f0e4d026-d349-4ee3-a34e-c0931ec35b1d.gif)
