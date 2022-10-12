@@ -204,7 +204,7 @@ export default {
         }, 200)
       })
       // 居中显示文字
-      let text = svg.text(innerRect.node.width.baseVal.value / 2, '50%', '80%').attr({
+      let text = svg.text(innerRect.node.width.baseVal.value / 2, '50%', this.row[this.mapFields.progress]).attr({
         stroke: '#faf7ec',
         dominantBaseline: 'middle',
         fontSize: '15px',
@@ -352,7 +352,7 @@ export default {
               }, 200)
             })
             // 居中显示文字
-            let text = svg.text(innerRect.node.width.baseVal.value / 2, '50%', '80%').attr({
+            let text = svg.text(innerRect.node.width.baseVal.value / 2, '50%', this.row[this.mapFields.progress]).attr({
               stroke: '#faf7ec',
               dominantBaseline: 'middle',
               fontSize: '15px',
