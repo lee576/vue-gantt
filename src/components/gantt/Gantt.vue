@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="gantt">
-      <SplitPane direction="row" :min="10" :max="80" :triggerLength="10" :paneLengthPercent.sync="paneLengthPercent">
+      <SplitPane direction="row" :min="0" :max="100" :triggerLength="10" :paneLengthPercent.sync="paneLengthPercent">
         <template v-slot:one>
           <task-table :headersHeight='styleConfig.headersHeight' :rowHeight='styleConfig.rowHeight'></task-table>
         </template>
@@ -48,6 +48,7 @@ import TaskTable from './task/TaskTable.vue'
 import { store, mutations } from '@/components/gantt/store.js'
 import Vue from 'vue'
 import { EventBus } from './EventBus'
+import _ from "lodash";
 export default {
   props: {
     styleConfig: {
@@ -153,45 +154,41 @@ export default {
     }
   },
   watch: {
-    barDate: {
-      handler (newVal, oldVal) {
-        if (newVal.id && (newVal.startDate !== oldVal.startDate || newVal.endDate !== oldVal.endDate)) {
-          this.eventConfig.barDate(newVal.id, newVal.startDate, newVal.endDate)
-        }
-      }
-    },
+    barDate: _.debounce(function(newVal){
+      this.eventConfig.barDate(newVal.id, newVal.startDate, newVal.endDate)
+    }, 500),
     // 时间表头最小单位宽度,所有表头的宽度都是他的倍数
-    scale: function (newVal) {
+    scale: _.debounce(function(newVal){
       this.setScale(newVal)
-    },
+    }, 500),
     // 任务表头
-    'dataConfig.taskHeaders': function (newVal) {
+    'dataConfig.taskHeaders': _.debounce(function(newVal){
       this.setTaskHeaders(newVal)
-    },
+    }, 100),
     // 月度表头
-    monthHeaders: function (newVal) {
+    monthHeaders: _.debounce(function(newVal){
       this.setMonthHeaders(newVal)
-    },
+    }, 100),
     // 日表头
-    dayHeaders: function (newVal) {
+    dayHeaders: _.debounce(function(newVal){
       this.setDayHeaders(newVal)
-    },
+    }, 100),
     // 星期表头
-    weekHeaders: function (newVal) {
+    weekHeaders: _.debounce(function(newVal){
       this.setWeekHeaders(newVal)
-    },
+    }, 100),
     // 小时表头
-    hourHeaders: function (newVal) {
+    hourHeaders: _.debounce(function(newVal){
       this.setHourHeaders(newVal)
-    },
+    }, 100),
     // 选择开始日期
-    selectedStartDate: function () {
+    selectedStartDate:_.debounce(function(newVal){
       this.setTimeLineHeaders(this.mode)
-    },
+    }, 100),
     // 选择结束日期
-    selectedEndDate: function () {
+    selectedEndDate:_.debounce(function(newVal){
       this.setTimeLineHeaders(this.mode)
-    },
+    }, 100),
     // 切换缩放单位(月/日/时)
     mode: function (newVal) {
       this.setMode(newVal)
@@ -206,12 +203,14 @@ export default {
       this.setMapFields(newVal)
     },
     'dataConfig.queryStartDate': function (newVal) {
+      this.dataConfig.dataSource = []
       this.setStartGanttDate(newVal)
       this.startGanttDate = this.dataConfig.queryStartDate
       this.selectedStartDate = this.dataConfig.queryStartDate
       this.startDate = this.dataConfig.queryStartDate
     },
     'dataConfig.queryEndDate': function (newVal) {
+      this.dataConfig.dataSource = []
       this.setEndGanttDate(newVal)
       this.endGanttDate = this.dataConfig.queryEndDate
       this.selectedEndDate = this.dataConfig.queryEndDate
@@ -469,7 +468,7 @@ export default {
         }
       }
       // 选定日期后重新查询
-      this.eventConfig.queryTask(this.selectedStartDate, this.selectedEndDate)
+      this.eventConfig.queryTask(this.selectedStartDate, this.selectedEndDate, this.mode)
     },
     openEndDatePicker () {
       this.showEndDatePicker = true

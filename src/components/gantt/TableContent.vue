@@ -53,7 +53,9 @@ export default {
   created () {},
   mounted () {
     EventBus.$on('scroll', (scrollTop) => {
-      this.$refs.barContent.scrollTop = scrollTop
+      if(this.$refs.barContent) {
+        this.$refs.barContent.scrollTop = scrollTop
+      }
     })
   },
   methods: {
@@ -64,7 +66,9 @@ export default {
     },
     scroll () {
       if (this.scrollFlag) {
-        EventBus.$emit('scroll', this.$refs.barContent.scrollTop)
+        if(this.$refs.barContent) {
+          EventBus.$emit('scroll', this.$refs.barContent.scrollTop)
+        }
       }
     },
     mouseover () {

@@ -52,7 +52,9 @@ export default {
 	mounted() {
     EventBus.$on('scroll',(scrollTop) => {
       if(this.$refs.taskContent) {
-        this.$refs.taskContent.scrollTop = scrollTop
+        if(this.$refs.taskContent.scrollTop) {
+          this.$refs.taskContent.scrollTop = scrollTop
+        }  
       }
     })
 	},
