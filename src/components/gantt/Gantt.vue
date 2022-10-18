@@ -48,7 +48,7 @@ import TaskTable from './task/TaskTable.vue'
 import { store, mutations } from '@/components/gantt/store.js'
 import Vue from 'vue'
 import { EventBus } from './EventBus'
-import _ from "lodash";
+import _ from "lodash"
 export default {
   props: {
     styleConfig: {
@@ -94,7 +94,8 @@ export default {
                typeof value.addSubTask === 'function' &&
                typeof value.removeTask === 'function' &&
                typeof value.queryTask === 'function' &&
-               typeof value.barDate === 'function'
+               typeof value.barDate === 'function' &&
+               typeof value.allowChangeTaskDate === 'function'
       }
     }
   },
@@ -151,6 +152,9 @@ export default {
     },
     barDate () {
       return store.barDate
+    },
+    allowChangeTaskDate () {
+      return store.allowChangeTaskDate
     }
   },
   watch: {
@@ -182,11 +186,11 @@ export default {
       this.setHourHeaders(newVal)
     }, 100),
     // 选择开始日期
-    selectedStartDate:_.debounce(function(){
+    selectedStartDate:_.debounce(function(newVal){
       this.setTimeLineHeaders(this.mode)
     }, 100),
     // 选择结束日期
-    selectedEndDate:_.debounce(function(){
+    selectedEndDate:_.debounce(function(newVal){
       this.setTimeLineHeaders(this.mode)
     }, 100),
     // 切换缩放单位(月/日/时)
@@ -262,6 +266,15 @@ export default {
         if (oldVal) { this.eventConfig.removeTask(oldVal) }
       }
       this.setRemoveTask(null)
+    },
+    // 是否允许拖动任务
+    allowChangeTaskDate: function (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        if (newVal) { this.eventConfig.allowChangeTaskDate(newVal) }
+      } else {
+        if (oldVal) { this.eventConfig.allowChangeTaskDate(oldVal) }
+      }
+      this.setAllowChangeTaskDate(null)
     }
   },
   created () {
@@ -347,6 +360,7 @@ export default {
     setEditTask: mutations.setEditTask,
     setRemoveTask: mutations.setRemoveTask,
     setBarDate: mutations.setBarDate,
+    setAllowChangeTaskDate: mutations.setAllowChangeTaskDate,
     // 修改按钮样式
     timeMode (mode) {
       this.$refs.barContent.scrollLeft = 0

@@ -8,7 +8,8 @@
       <div style="width: 100%;border-top: 1px solid #cecece;margin:0px 0px -1px -1px;"></div>
     </div>
     <div v-bind:style="{ height: 'calc(100% - ' + headersHeight + 'px)' }">
-      <task-content :headers='taskHeaders' :rowHeight='rowHeight' :tasks='tasks'></task-content>
+      <task-content v-if='Array.isArray(tasks) && tasks.length > 0' :headers='taskHeaders' :rowHeight='rowHeight' :tasks='tasks'></task-content>
+      <div class="nodata">暂无数据</div>
     </div>
   </div>
 </template>
@@ -115,6 +116,15 @@ export default {
         fill: #3A8EE6;
       }
     }
+  }
+  .nodata {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:justify;
+    width:100%;
+    height:100%;
+    color: #6B6B97
   }
 }
 </style>

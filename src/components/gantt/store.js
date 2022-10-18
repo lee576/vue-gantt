@@ -26,6 +26,8 @@ export let store = Vue.observable({
   editTask: {},
   // 删除任务
   removeTask: {},
+  // 是否允许拖动Bar的开始结束日期
+  allowChangeTaskDate: {},
   // bar 的时间改变
   barDate: {
     id: '',
@@ -109,5 +111,9 @@ export let mutations = {
   // bar 的时间改变
   setBarDate (barDate) {
     store.barDate = barDate
+  },
+  // 是否允许拖动Bar的开始结束日期
+  setAllowChangeTaskDate (task) {
+    store.allowChangeTaskDate = task
   }
 }

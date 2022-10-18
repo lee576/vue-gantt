@@ -116,6 +116,7 @@ export default {
   },
   methods: {
     setBarDate: mutations.setBarDate,
+    setAllowChangeTaskDate : mutations.setAllowChangeTaskDate,
     isChildOf (child, parent) {
       if (child && parent) {
         let parentNode = child.parentNode
@@ -277,7 +278,6 @@ export default {
           }
         }
       })
-
       interact(bar).resizable({
         // 调整大小的时候确定哪些边可以拖动
         edges: { left: true, right: true, bottom: false, top: false },
@@ -289,6 +289,8 @@ export default {
             this.oldBarWidth = event.target.getAttribute('width')
           },
           end: (event) => {
+            // 检测Bar是否能拖动
+            this.setAllowChangeTaskDate(this.row)
             let target = event.target
             let x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
 
@@ -418,7 +420,9 @@ export default {
         inertia: false,
         hold: 1
       })
-      // 拖动只改变x轴的坐标
+      
+      
+     // 拖动只改变x轴的坐标
       function dragMoveListener (event) {
         let {x} = event.target.dataset
         x = (parseFloat(event.target.getAttribute('data-x')) || 0) + event.dx
