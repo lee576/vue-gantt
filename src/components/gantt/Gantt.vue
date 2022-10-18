@@ -186,11 +186,11 @@ export default {
       this.setHourHeaders(newVal)
     }, 100),
     // 选择开始日期
-    selectedStartDate:_.debounce(function(newVal){
+    selectedStartDate:_.debounce(function(){
       this.setTimeLineHeaders(this.mode)
     }, 100),
     // 选择结束日期
-    selectedEndDate:_.debounce(function(newVal){
+    selectedEndDate:_.debounce(function(){
       this.setTimeLineHeaders(this.mode)
     }, 100),
     // 切换缩放单位(月/日/时)
