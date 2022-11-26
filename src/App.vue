@@ -129,7 +129,9 @@ export default {
         // 查询任务事件
         queryTask: this.queryTask,
         // Bar 开始时间结束时间更改
-        barDate: this.barDate
+        barDate: this.barDate,
+        // 是否允许拖动改变Bar的时间
+        allowChangeTaskDate: this.allowChangeTaskDate,
       }
     }
   },
@@ -189,6 +191,10 @@ export default {
         // 
         callback('black')
       }
+    },
+    allowChangeTaskDate(row) {
+      console.log(row)
+      return true;
     }
   }
 }
