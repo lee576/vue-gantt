@@ -25,66 +25,7 @@ export default {
         // 甘特图结束时间
         queryEndDate: '',
         // 数据源
-        dataSource: [{
-          id: '1',
-          pid: '0',
-          taskNo: '1',
-          level: '重要',
-          start_date: '2022-03-04 05:00:00',
-          end_date: '2022-03-05 00:00:00',
-          job_progress: '0.3',
-          spend_time: null
-        },
-        {
-          id: '3',
-          pid: '0',
-          taskNo: '2',
-          level: '紧急',
-          start_date: '2022-03-05 05:00:00',
-          end_date: '2022-03-09 00:00:00',
-          job_progress: '0.4',
-          spend_time: null
-        },
-        {
-          id: '2',
-          pid: '1',
-          taskNo: '1_1',
-          level: '一般',
-          start_date: '2022-03-07 00:00:00',
-          end_date: '2022-03-11 22:00:00',
-          job_progress: '0.6',
-          spend_time: null
-        },
-        {
-          id: '4',
-          pid: '3',
-          taskNo: '2_1',
-          level: '不重要',
-          start_date: '2022-03-08 00:00:00',
-          end_date: '2022-03-14 22:00:00',
-          job_progress: '0.7',
-          spend_time: null
-        },
-        {
-          id: '5',
-          pid: '2',
-          taskNo: '1_1_1',
-          level: '一般',
-          start_date: '2022-03-05 00:00:00',
-          end_date: '2022-03-13 22:00:00',
-          job_progress: '0.9',
-          spend_time: null
-        },
-        {
-          id: '6',
-          pid: '1',
-          taskNo: '1_2',
-          level: '一般',
-          start_date: '2022-03-03 00:00:00',
-          end_date: '2022-03-07 22:00:00',
-          job_progress: '0.65',
-          spend_time: null
-        }],
+        dataSource: [],
         // 字段映射
         mapFields: {
           // id
@@ -156,6 +97,54 @@ export default {
     queryTask (queryStart, queryEnd) {
       this.dataConfig.queryStartDate = queryStart
       this.dataConfig.queryEndDate = queryEnd
+      console.log(queryStart)
+      console.log(queryEnd)
+      this.dataConfig.dataSource = [{
+          id: '1',
+          pid: '0',
+          taskNo: '1',
+          level: '重要',
+          start_date: '2022-11-04 05:00:00',
+          end_date: '2022-11-08 00:00:00',
+          job_progress: '0.3',
+          spend_time: null
+        },{
+          id: '2',
+          pid: '1',
+          taskNo: '2',
+          level: '一般',
+          start_date: '2022-11-06 05:00:00',
+          end_date: '2022-11-10 00:00:00',
+          job_progress: '0.7',
+          spend_time: null
+        },{
+          id: '3',
+          pid: '1',
+          taskNo: '3',
+          level: '紧急',
+          start_date: '2022-11-06 05:00:00',
+          end_date: '2022-11-10 00:00:00',
+          job_progress: '0.9',
+          spend_time: null
+        },{
+          id: '4',
+          pid: '0',
+          taskNo: '4',
+          level: '重要',
+          start_date: '2022-11-02 05:00:00',
+          end_date: '2022-11-15 00:00:00',
+          job_progress: '0.3',
+          spend_time: null
+        },{
+          id: '5',
+          pid: '4',
+          taskNo: '4',
+          level: '一般',
+          start_date: '2022-11-06 05:00:00',
+          end_date: '2022-11-12 00:00:00',
+          job_progress: '0.55',
+          spend_time: null
+        }]
     },
     // 添加父任务
     addRootTask () {
