@@ -1,10 +1,3 @@
-先打个广告
-技术栈： 
-前端 vue2 vue3
-后端 .net winform webapi
-老程序员接单，微信
-![image](https://github.com/lee576/vue-gantt/assets/42806849/5a401168-ab11-4853-bebd-9cc65f1de3e1)
-
 Vue 下的甘特图组件
 进度条是用SVG画的，使用了几个工具库 （interactjs 用来处理拖拽和修改尺寸，snap.svg 用来处理 svg 的dom 操作，moment.js用来处理时间的操作），其他没有依赖任何的UI组件
 
@@ -222,3 +215,10 @@ export default {
 </style>
 
 ```
+
+先打个广告
+技术栈： 
+前端 vue2 vue3
+后端 .net winform webapi
+老程序员接单，微信
+![image](https://github.com/lee576/vue-gantt/assets/42806849/5a401168-ab11-4853-bebd-9cc65f1de3e1)
